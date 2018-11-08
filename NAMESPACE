@@ -3,4 +3,5 @@
 export("%>%")
 export(control_probe_intensities)
 export(plot_control_probes)
+export(summary_detectionP)
 importFrom(magrittr,"%>%")
