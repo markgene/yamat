@@ -2,6 +2,6 @@
 .Rhistory
 .RData
 .Ruserdata
-.Rbuildignore
-.gitignore
-yamat.Rproj
+#.Rbuildignore
+#.gitignore
+#yamat.Rproj
