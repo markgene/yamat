@@ -39,7 +39,6 @@ qc <-
                       plot_file = control_probe_plot_file)
     if (verbose)
       tictoc::toc()
-
     # Quality control: detection p-values
     if (verbose) {
       message("Detection p-values...")
@@ -60,7 +59,6 @@ qc <-
     }
     if (verbose)
       tictoc::toc()
-
     # Quality control: gender
     if (verbose) {
       message("Gender information...")
