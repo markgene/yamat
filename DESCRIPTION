@@ -10,6 +10,8 @@ Description: The package is used to analyze 850K/EPIC methylation array
 License: GPL (>=2)
 Encoding: UTF-8
 LazyData: true
-Imports: magrittr
+Imports: 
+    magrittr (>= 1.5)
 RoxygenNote: 6.1.0
-Suggests: testthat
+Suggests: 
+    testthat (>= 2.0.0)
