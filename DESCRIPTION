@@ -14,7 +14,8 @@ Imports:
     magrittr (>= 1.5),
     dplyr (>= 0.7.7),
     ggplot2 (>= 3.0.0),
-    ggpubr (>= 0.1.8)
+    ggpubr (>= 0.1.8),
+    minfi (>= 1.27.0)
 RoxygenNote: 6.1.0
 Suggests: 
     testthat (>= 2.0.0),
