@@ -2,6 +2,8 @@
 
 export("%>%")
 export(control_probe_intensities)
+export(dye_bias_correction)
+export(normalize)
 export(plot_control_probes)
 export(summary_detectionP)
 importFrom(magrittr,"%>%")
