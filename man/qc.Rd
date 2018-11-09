@@ -5,7 +5,7 @@
 \title{Quality control}
 \usage{
 qc(rgset, report_dir, control_probe_plot_file = "control_probes.png",
-  detP_file, overwrite = FALSE, verbose = TRUE)
+  detP_file = "detP.tab", overwrite = FALSE, verbose = TRUE)
 }
 \arguments{
 \item{rgset}{An object of \code{\link[minfi]{RGChannelSet-class}}.}
@@ -15,15 +15,18 @@ qc(rgset, report_dir, control_probe_plot_file = "control_probes.png",
 \item{control_probe_plot_file}{A character scalar of the filename of control
 probe plot. Default to "control_probes.png".}
 
-\item{detP_file}{A character scalar of the file stored the summary statistics
-of detection p-values by sample.}
-
 \item{overwrite}{A logical scalar. Default to FALSE.}
 
 \item{verbose}{A logical scalar. Default to TRUE.}
+
+\item{detP_summary_file}{A character scalar of the file stored the summary
+statistics of detection p-values by sample. Default to "detP.tab".}
 }
 \value{
-TBA.
+An object of \code{\link[minfi]{RGChannelSet-class}} with predicted
+  gender information added. The additional columns are \code{predictedSex}
+  (a character with values M and F), \code{xMed} and \code{yMed}, which are
+  the chip-wide medians of measurements on the two sex chromosomes.
 }
 \description{
 Quality control are performed in terms of observed intensities of control
