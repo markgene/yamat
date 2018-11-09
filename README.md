@@ -18,6 +18,12 @@ plots$one_plot
 
 ## Remove Batch Effect
 
+If you have an object of `MethylSet` or `GenomicMethylSet` class, use the default 
+method, which will remove the batch effect of methylation and unmethylation 
+signals (log2 transformed) separately. If you have an object of `RatioSet` or 
+`GenomicRatioSet` class, which does not keep methylation and unmethylation 
+signals, set `method` as `"cn"` or `"beta"` for copy number or beta value. 
+
 ```{r, batch_effect}
 library(yamat)
 library(minfiData)
