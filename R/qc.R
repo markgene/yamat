@@ -7,8 +7,10 @@
 #' @param report_dir A character scalar of reporting directory.
 #' @param control_probe_plot_file A character scalar of the filename of control
 #'   probe plot. Default to "control_probes.png".
-#' @param detP_summary_file A character scalar of the file stored the summary
+#' @param detP_file A character scalar of the file stored the summary
 #'   statistics of detection p-values by sample. Default to "detP.tab".
+#' @param pheno_file A character scalar of the file stored the summary
+#'   statistics of detection p-values by sample. Default to "pheno.tab".
 #' @param overwrite A logical scalar. Default to FALSE.
 #' @param verbose A logical scalar. Default to TRUE.
 #' @return An object of \code{\link[minfi]{RGChannelSet-class}} with predicted
@@ -21,6 +23,7 @@ qc <-
            report_dir,
            control_probe_plot_file = "control_probes.png",
            detP_file = "detP.tab",
+           pheno_file = "pheno.tab",
            overwrite = FALSE,
            verbose = TRUE) {
     if (missing(rgset))
@@ -44,7 +47,7 @@ qc <-
       message("Detection p-values...")
       tictoc::tic()
     }
-    detP_file <- file.path(report_base, detP_file)
+    detP_file <- file.path(report_dir, detP_file)
     if (overwrite | !file.exists(detP_file)) {
       detP_summary <- minfi::detectionP(rgset) %>%
         summary_detectionP()
@@ -64,7 +67,17 @@ qc <-
       message("Gender information...")
       tictoc::tic()
     }
-    minfi::pData(rgset) <- yamap::get_gender(rgset = rgset, norm_method = "raw")
+    minfi::pData(rgset) <- get_gender(rgset = rgset, norm_method = "raw")
+    pheno_file <- file.path(report_dir, pheno_file)
+    minfi::pData(rgset) %>%
+      as.data.frame() %>%
+      write.table(
+        x = .,
+        file = pheno_file,
+        sep = "\t",
+        row.names = TRUE,
+        quote = FALSE
+      )
     if (verbose)
       tictoc::toc()
     invisible(rgset)
