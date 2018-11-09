@@ -11,5 +11,6 @@ test_that("plot_control_probes()", {
   testthat::expect_error(plots <- plot_control_probes(RGsetEx, s = 1), NA)
 })
 
-file.remove("Rplots.pdf")
+if (file.exists("Rplots.pdf"))
+  file.remove("Rplots.pdf")
 
