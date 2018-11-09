@@ -5,7 +5,8 @@
 \title{Quality control}
 \usage{
 qc(rgset, report_dir, control_probe_plot_file = "control_probes.png",
-  detP_file = "detP.tab", overwrite = FALSE, verbose = TRUE)
+  detP_file = "detP.tab", pheno_file = "pheno.tab",
+  overwrite = FALSE, verbose = TRUE)
 }
 \arguments{
 \item{rgset}{An object of \code{\link[minfi]{RGChannelSet-class}}.}
@@ -15,12 +16,15 @@ qc(rgset, report_dir, control_probe_plot_file = "control_probes.png",
 \item{control_probe_plot_file}{A character scalar of the filename of control
 probe plot. Default to "control_probes.png".}
 
+\item{detP_file}{A character scalar of the file stored the summary
+statistics of detection p-values by sample. Default to "detP.tab".}
+
+\item{pheno_file}{A character scalar of the file stored the summary
+statistics of detection p-values by sample. Default to "pheno.tab".}
+
 \item{overwrite}{A logical scalar. Default to FALSE.}
 
 \item{verbose}{A logical scalar. Default to TRUE.}
-
-\item{detP_summary_file}{A character scalar of the file stored the summary
-statistics of detection p-values by sample. Default to "detP.tab".}
 }
 \value{
 An object of \code{\link[minfi]{RGChannelSet-class}} with predicted
