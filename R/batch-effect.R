@@ -1,9 +1,6 @@
 # Deal with Batch Effect.
 
-#' Remove batch effect: DKFZ method.
-#'
-#' Remove batch effect for methylation and unmethylation signals (log2
-#' transformed) separately. See \href{https://www.ncbi.nlm.nih.gov/pubmed/29539639}{Capper D. DNA methylation-based classification of central nervous system tumours. Nature (2018)}.
+#' Remove batch effect.
 #'
 #' @param x An object of \code{\link[minfi]{MethylSet-class}} or
 #'   \code{\link[minfi]{GenomicMethylSet-class}} if \code{method} is "mum".

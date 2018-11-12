@@ -2,7 +2,7 @@
 % Please edit documentation in R/batch-effect.R
 \name{remove_batch_effect}
 \alias{remove_batch_effect}
-\title{Remove batch effect: DKFZ method.}
+\title{Remove batch effect.}
 \usage{
 remove_batch_effect(x, batch = NULL, batch2 = NULL, method = c("mum",
   "cn", "beta"), offset = 1, ...)
@@ -33,8 +33,7 @@ Default to 1. Only valid for "mum" method.}
 An object of \code{\link[minfi]{GenomicMethylSet-class}}.
 }
 \description{
-Remove batch effect for methylation and unmethylation signals (log2
-transformed) separately. See \href{https://www.ncbi.nlm.nih.gov/pubmed/29539639}{Capper D. DNA methylation-based classification of central nervous system tumours. Nature (2018)}.
+Remove batch effect.
 }
 \details{
 Batch effect is removed by calling \code{\link[limma]{removeBatchEffect}}.
