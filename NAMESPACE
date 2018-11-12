@@ -2,6 +2,7 @@
 
 export("%>%")
 export(control_probe_intensities)
+export(copy_number)
 export(dye_bias_correction)
 export(get_gender)
 export(init_report)
