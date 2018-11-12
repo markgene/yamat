@@ -4,10 +4,11 @@
 \alias{init_report}
 \title{Initiate report directory.}
 \usage{
-init_report(rgset, report_dir)
+init_report(x, report_dir)
 }
 \arguments{
-\item{rgset}{An object of \code{\link[minfi]{RGChannelSet-class}}.}
+\item{x}{An object that has \code{sampleNames} method, for example,
+\code{\link[minfi]{RGChannelSet-class}}.}
 
 \item{report_dir}{A character scalar of reporting directory.}
 }
