@@ -274,5 +274,11 @@ normalize.methylcnv <- function(rgset, target_value = 13, offset = 1) {
   cn_factor <- target_value / colMedians(cn)
   grset <- minfi::ratioConvert(gmset)
   assay(grset, "CN") <- sweep(cn, 2, FUN = "*", cn_factor)
+  grset@preprocessMethod <-
+    c(
+      rg.norm = "methylcnv",
+      minfi = as.character(packageVersion("minfi")),
+      manifest = as.character(packageVersion(minfi:::.getManifestString(rgset@annotation)))
+    )
   grset
 }

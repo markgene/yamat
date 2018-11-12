@@ -5,13 +5,14 @@
 \title{Normalization wrapper.}
 \usage{
 normalize(rgset, norm_method = c("raw", "illumina", "swan", "quantile",
-  "noob", "funnorm", "yamat", "dkfz"), map_to_genome = TRUE, ...)
+  "noob", "funnorm", "yamat", "dkfz", "methylcnv"), map_to_genome = TRUE,
+  ...)
 }
 \arguments{
 \item{rgset}{An object of \code{\link[minfi]{RGChannelSet-class}}.}
 
 \item{norm_method}{A character scalar of method, including raw, illumina,
-swan, quantile, noob, funnorm, yamat, dkfz. Default to "raw".}
+swan, quantile, noob, funnorm, yamat, dkfz, methycnv. Default to "raw".}
 
 \item{map_to_genome}{A logical scalar if an object of \code{\link[minfi]{MethylSet-class}}
 or \code{\link[minfi]{GenomicMethylSet-class}} will be returned. Default

@@ -89,8 +89,7 @@ test_that("normalize(): methylcnv", {
   testthat::skip_if(skip_flag, "Skip: it takes a long time.")
   testthat::expect_error(normalize(
     RGsetEx.sub,
-    norm_method = "methylcnv",
-    map_to_genome = FALSE
+    norm_method = "methylcnv"
   ),
   NA)
 })
