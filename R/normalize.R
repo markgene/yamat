@@ -8,7 +8,7 @@
 #'
 #' @param rgset An object of \code{\link[minfi]{RGChannelSet-class}}.
 #' @param norm_method A character scalar of method, including raw, illumina,
-#'   swan, quantile, noob, funnorm, yamat, dkfz. Default to "raw".
+#'   swan, quantile, noob, funnorm, yamat, dkfz, methycnv. Default to "raw".
 #' @param map_to_genome A logical scalar if an object of \code{\link[minfi]{MethylSet-class}}
 #'   or \code{\link[minfi]{GenomicMethylSet-class}} will be returned. Default
 #'   to TRUE.
@@ -25,7 +25,8 @@ normalize <- function(rgset,
                                       "noob",
                                       "funnorm",
                                       "yamat",
-                                      "dkfz"),
+                                      "dkfz",
+                                      "methylcnv"),
                       map_to_genome = TRUE,
                       ...)  {
   norm_method <- match.arg(norm_method)
@@ -38,7 +39,8 @@ normalize <- function(rgset,
     noob     = normalize.noob(rgset, map_to_genome = map_to_genome, ...),
     funnorm  = normalize.funnorm(rgset, ...),
     dkfz     = normalize.dkfz(rgset, map_to_genome = map_to_genome),
-    yamap    = normalize.yamap(rgset, map_to_genome = map_to_genome, ...)
+    yamap    = normalize.yamap(rgset, map_to_genome = map_to_genome, ...),
+    methycnv = normalize.methycnv(rgset, ...)
   )
 }
 
@@ -248,4 +250,29 @@ dye_bias_correction <- function(rgset, scale_to = 10000) {
   assay(rgset, "Green") <- Green
   assay(rgset, "Red") <- Red
   rgset
+}
+
+
+#' Normalization MethylCNV.
+#'
+#' Normalization method used in MethylCNV pipeline, which adjust the median of
+#' log2 copy number on each array to a target value of 13.
+#'
+#' @param rgset An object of \code{\link[minfi]{RGChannelSet-class}}.
+#' @param target_value A numeric value to which the median of log2 copy number
+#'   on each array is adjusted. Default to 13.
+#' @param offset A numeric scalar. It is only applicable when log2 transform
+#'   is carried out. Default to 1.
+#' @return An object of \code{\link[minfi]{GenomicRatioSet-class}}.
+#' @details The method was used in copy number variant pipeline described in
+#' the paper Feng, G. A Statistical Method to Estimate DNA Copy Number from
+#' Illumina High-Density Methylation Arrays. Systems Biomedicine (2013). It
+#' adjust the median of log2 copy number on each array to a target value of 13.
+normalize.methylcnv <- function(rgset, target_value = 13, offset = 1) {
+  gmset <- normalize(rgset, norm_method = "raw", map_to_genome = TRUE)
+  cn <- copy_number(gmset, log2_transform = TRUE, offset = offset)
+  cn_factor <- target_value / colMedians(cn)
+  grset <- minfi::ratioConvert(gmset)
+  assay(grset, "CN") <- sweep(cn, 2, FUN = "*", cn_factor)
+  grset
 }
