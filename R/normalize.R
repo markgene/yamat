@@ -8,7 +8,7 @@
 #'
 #' @param rgset An object of \code{\link[minfi]{RGChannelSet-class}}.
 #' @param norm_method A character scalar of method, including raw, illumina,
-#'   swan, quantile, noob, funnorm, yamat, dkfz, methycnv. Default to "raw".
+#'   swan, quantile, noob, funnorm, yamat, dkfz, methylcnv. Default to "raw".
 #' @param map_to_genome A logical scalar if an object of \code{\link[minfi]{MethylSet-class}}
 #'   or \code{\link[minfi]{GenomicMethylSet-class}} will be returned. Default
 #'   to TRUE.
@@ -32,15 +32,15 @@ normalize <- function(rgset,
   norm_method <- match.arg(norm_method)
   switch(
     norm_method,
-    illumina = normalize.illumina(rgset, ...),
-    raw      = normalize.raw(rgset, map_to_genome = map_to_genome),
-    swan     = normalize.swan(rgset, map_to_genome = map_to_genome, ...),
-    quantile = normalize.quantile(rgset, ...),
-    noob     = normalize.noob(rgset, map_to_genome = map_to_genome, ...),
-    funnorm  = normalize.funnorm(rgset, ...),
-    dkfz     = normalize.dkfz(rgset, map_to_genome = map_to_genome),
-    yamap    = normalize.yamap(rgset, map_to_genome = map_to_genome, ...),
-    methycnv = normalize.methylcnv(rgset, ...)
+    illumina  = normalize.illumina(rgset, ...),
+    raw       = normalize.raw(rgset, map_to_genome = map_to_genome),
+    swan      = normalize.swan(rgset, map_to_genome = map_to_genome, ...),
+    quantile  = normalize.quantile(rgset, ...),
+    noob      = normalize.noob(rgset, map_to_genome = map_to_genome, ...),
+    funnorm   = normalize.funnorm(rgset, ...),
+    dkfz      = normalize.dkfz(rgset, map_to_genome = map_to_genome),
+    yamap     = normalize.yamap(rgset, map_to_genome = map_to_genome, ...),
+    methylcnv = normalize.methylcnv(rgset, ...)
   )
 }
 
