@@ -5,7 +5,7 @@
 \title{Remove batch effect.}
 \usage{
 remove_batch_effect(x, batch = NULL, batch2 = NULL, method = c("mum",
-  "cn", "beta"), offset = 1, ...)
+  "cn", "beta"), offset = 1, verbose = TRUE, ...)
 }
 \arguments{
 \item{x}{An object of \code{\link[minfi]{MethylSet-class}} or
@@ -26,6 +26,8 @@ Default to "mum".}
 
 \item{offset}{The offset is chosen to avoid log2 transform on zeros.
 Default to 1. Only valid for "mum" method.}
+
+\item{verbose}{A logical scalar. Default to TRUE.}
 
 \item{...}{Other arguments can be passed to \code{\link[limma]{removeBatchEffect}}.}
 }

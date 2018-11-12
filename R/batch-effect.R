@@ -16,6 +16,7 @@
 #'   Default to "mum".
 #' @param offset The offset is chosen to avoid log2 transform on zeros.
 #'   Default to 1. Only valid for "mum" method.
+#' @param verbose A logical scalar. Default to TRUE.
 #' @param ... Other arguments can be passed to \code{\link[limma]{removeBatchEffect}}.
 #' @return An object of \code{\link[minfi]{GenomicMethylSet-class}}.
 #' @details Batch effect is removed by calling \code{\link[limma]{removeBatchEffect}}.
@@ -28,8 +29,14 @@ remove_batch_effect <-
            batch2 = NULL,
            method = c("mum", "cn", "beta"),
            offset = 1,
+           verbose = TRUE,
            ...) {
     pheno_df <- as.data.frame(minfi::pData(x))
+    if (is.null(batch) & is.null(batch2)) {
+      if (verbose)
+        message("Both batch and batch2 are null. Return the input object.")
+      return(x)
+    }
     if (!is.null(batch)) {
       if (!batch %in% colnames(pheno_df))
         stop("batch is not present.")
