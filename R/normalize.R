@@ -40,7 +40,7 @@ normalize <- function(rgset,
     funnorm  = normalize.funnorm(rgset, ...),
     dkfz     = normalize.dkfz(rgset, map_to_genome = map_to_genome),
     yamap    = normalize.yamap(rgset, map_to_genome = map_to_genome, ...),
-    methycnv = normalize.methycnv(rgset, ...)
+    methycnv = normalize.methylcnv(rgset, ...)
   )
 }
 
