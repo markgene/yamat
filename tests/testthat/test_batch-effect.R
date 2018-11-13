@@ -2,7 +2,7 @@ context("Batch effect")
 library(yamat)
 library(minfiData)
 
-skip_flag <- FALSE
+skip_flag <- TRUE
 
 test_that("remove_batch_effect(): methylation and unmethylation signals", {
   testthat::skip_if(skip_flag, "Skip")
