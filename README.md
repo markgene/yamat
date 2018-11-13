@@ -15,6 +15,9 @@ devtools::install_github("markgene/yamat")
 * Normalization.
 * Batch effect removal.
 
+It also provides the function `get_gse()` to download IDAT files by GEO 
+series (GSE) accession.
+
 I am using the data in *minfiData* package below.
 
 ```{r}
@@ -76,13 +79,16 @@ minfi::pData(RGsetEx) <- get_gender(RGsetEx)
 
 ## Normalization
 
-There are eight normalization methods, including six implemented in *minfi* 
+There are nine normalization methods, including six implemented in *minfi* 
 package. The additional two methods are:
 
-* *dkfz* is used in the paper [Capper et al. DNA methylation-based classification 
-of central nervous system tumours. Nature (2018)](https://www.ncbi.nlm.nih.gov/pubmed/29539639). 
-* *yamat* normalizes samples individually with Illumina method implemented in 
-*minfi* package, instead of use one sample as reference.
+* *dkfz* is used in the paper [Capper et al. DNA methylation-based 
+classification of central nervous system tumours. Nature (2018)](https://www.ncbi.nlm.nih.gov/pubmed/29539639). 
+* *yamat* normalizes samples individually with Illumina method implemented 
+in *minfi* package, instead of use one sample as reference.
+* *methylcnv* is used in the paper [Feng, G. et al. A Statistical Method to Estimate DNA Copy Number from Illumina High-Density Methylation Arrays. Systems Biomedicine (2013)](https://www.tandfonline.com/doi/pdf/10.4161/sysb.25896). It
+adjusts the median of log2 copy number on each array to a target value 
+of 13. I implement the method with an argument of target value.
 
 ```{r normalization}
 gmset <- normalize(RGsetEx, norm_method = "dkfz", map_to_genome = TRUE)
