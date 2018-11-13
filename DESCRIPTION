@@ -1,7 +1,7 @@
 Package: yamat
 Type: Package
 Title: Yet Another Methylation Array Toolkit
-Version: 0.0.0.9010
+Version: 0.0.0.9011
 Authors@R: c(
     person("Mark", "Chen", email = "mjchen.gene@gmail.com", role = "cre"))
 Maintainer: Mark J Chen <mjchen.gene@gmail.com>
@@ -16,8 +16,11 @@ Imports:
     ggplot2 (>= 3.0.0),
     ggpubr (>= 0.1.8),
     tictoc (>= 1.0),
-    minfi (>= 1.27.0)
-RoxygenNote: 6.1.0
+    minfi (>= 1.27.0),
+    GEOquery (>= 2.49.1),
+    Biobase (>= 2.41.2),
+    R.utils (>= 2.7.0)
+RoxygenNote: 6.1.1
 Suggests: 
     testthat (>= 2.0.0),
     minfiData (>= 0.27.0)
