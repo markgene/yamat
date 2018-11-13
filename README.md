@@ -94,6 +94,10 @@ of 13. I implement the method with an argument of target value.
 gmset <- normalize(RGsetEx, norm_method = "dkfz", map_to_genome = TRUE)
 ```
 
+Note: normalization methods of the same name sometimes have different 
+implementation. For example, the quantile normalization in *minfi* package 
+and *CopyNumber450k8 are different.
+
 ## Remove Batch Effect
 
 If you have an object of `MethylSet` or `GenomicMethylSet` class, use the default 
