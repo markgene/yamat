@@ -100,6 +100,16 @@ remove_batch_effect_mum <-
     x_rm_batch <- x
     assay(x_rm_batch, "Meth") <- 2 ^ meth_log2_rm_batch
     assay(x_rm_batch, "Unmeth") <- 2 ^ unmeth_log2_rm_batch
+    paste0(
+      x_rm_batch@preprocessMethod["rg.norm"],
+      ". Corrected batch1=",
+      batch,
+      ", batch2=",
+      batch2,
+      " (mum)."
+    ) %>%
+      unique() %>%
+      head(., n = 1) -> x_rm_batch@preprocessMethod["rg.norm"]
     x_rm_batch
   }
 
@@ -135,6 +145,16 @@ remove_batch_effect_cn <-
                                batch = batch,
                                batch2 = batch2,
                                ...)
+    paste0(
+      x_rm_batch@preprocessMethod["rg.norm"],
+      ". Corrected batch1=",
+      batch,
+      ", batch2=",
+      batch2,
+      " (cn)."
+    ) %>%
+      unique() %>%
+      head(., n = 1) -> x_rm_batch@preprocessMethod["rg.norm"]
     x_rm_batch
   }
 
@@ -167,5 +187,15 @@ remove_batch_effect_beta <-
                                batch = batch,
                                batch2 = batch2,
                                ...)
+    paste0(
+      x_rm_batch@preprocessMethod["rg.norm"],
+      ". Corrected batch1=",
+      batch,
+      ", batch2=",
+      batch2,
+      " (beta)."
+    ) %>%
+      unique() %>%
+      head(., n = 1) -> x_rm_batch@preprocessMethod["rg.norm"]
     x_rm_batch
   }
