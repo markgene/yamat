@@ -39,7 +39,7 @@ normalize <- function(rgset,
     noob      = normalize.noob(rgset, map_to_genome = map_to_genome, ...),
     funnorm   = normalize.funnorm(rgset, ...),
     dkfz      = normalize.dkfz(rgset, map_to_genome = map_to_genome),
-    yamap     = normalize.yamap(rgset, map_to_genome = map_to_genome, ...),
+    yamat     = normalize.yamat(rgset, map_to_genome = map_to_genome, ...),
     methylcnv = normalize.methylcnv(rgset, ...)
   )
 }
@@ -166,9 +166,12 @@ normalize.yamat <- function(rgset, map_to_genome = TRUE, ...) {
     }
   )
   mset <- do.call(minfi::combine, mset_list)
+  norm_desc <- mset@preprocessMethod["rg.norm"] %>%
+    sub("Illumina", "yamat", .) %>%
+    sub(", reference = 1", "", .)
   mset@preprocessMethod <-
     c(
-      rg.norm = "yamap",
+      rg.norm = norm_desc,
       minfi = as.character(packageVersion("minfi")),
       manifest = as.character(packageVersion(minfi:::.getManifestString(rgset@annotation)))
     )
