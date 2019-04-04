@@ -3,6 +3,7 @@
 export("%>%")
 export(control_probe_intensities)
 export(copy_number)
+export(create_idat_table)
 export(dye_bias_correction)
 export(get_gender)
 export(get_gse)
