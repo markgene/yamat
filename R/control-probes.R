@@ -248,16 +248,25 @@ control_probe_intensities <- function(x) {
       "Medium",
       Expected_Grn
     )) %>%
-    # Specificity I
+    # Specificity I - Green
     dplyr::mutate(Expected_Grn = ifelse(
-      stringr::str_detect(ExtendedType, "^GT Mismatch [1-9] \\(PM\\)$"),
+      stringr::str_detect(ExtendedType, "^GT Mismatch [1-3] \\(PM\\)$"),
       "High",
-      Expected_Grn
+      ifelse(
+        stringr::str_detect(ExtendedType, "^GT Mismatch [1-3] \\(MM\\)$"),
+        "Background",
+        Expected_Grn
+      )
     )) %>%
-    dplyr::mutate(Expected_Grn = ifelse(
-      stringr::str_detect(ExtendedType, "^GT Mismatch [1-9] \\(MM\\)$"),
-      "Background",
-      Expected_Grn
+    # Specificity I - Red
+    dplyr::mutate(Expected_Red = ifelse(
+      stringr::str_detect(ExtendedType, "^GT Mismatch [4-6] \\(PM\\)$"),
+      "High",
+      ifelse(
+        stringr::str_detect(ExtendedType, "^GT Mismatch [4-6] \\(MM\\)$"),
+        "Background",
+        Expected_Red
+      )
     )) %>%
     # BS I
     dplyr::mutate(Expected_Grn = ifelse(
