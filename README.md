@@ -2,9 +2,39 @@
 
 ## Install
 
+Install dependencies:
+
+```{r, install_dependencies}
+if (!require("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+
+BiocManager::install("minfi")
+BiocManager::install("GEOquery")
+```
+
+Install `yamat`:
+
 ```{r, install_yamat}
 if (! ("devtools" %in% installed.packages()) install.packages("devtools")
 devtools::install_github("markgene/yamat")
+```
+
+Other suggested packages:
+
+```{r, install_suggested}
+# This will install 450K annotation and manifest packages: 
+# IlluminaHumanMethylation450kmanifest, 
+# IlluminaHumanMethylation450kanno.ilmn12.hg19
+BiocManager::install("minfiData")
+
+# This will install EPIC annotation and manifest packages:
+# IlluminaHumanMethylationEPICmanifest, 
+# IlluminaHumanMethylationEPICanno.ilm10b2.hg19
+BiocManager::install("minfiDataEPIC")
+
+# EPIC version 2 - manifest and annotation packages
+BiocManager::install("IlluminaHumanMethylationEPICv2manifest")
+BiocManager::install("IlluminaHumanMethylationEPICv2anno.20a1.hg38")
 ```
 
 ## Overview

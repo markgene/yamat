@@ -23,4 +23,7 @@ Imports:
 RoxygenNote: 6.1.1
 Suggests: 
     testthat (>= 2.0.0),
-    minfiData (>= 0.27.0)
+    minfiData (>= 0.27.0),
+    minfiDataEPIC (>= 1.30),
+    IlluminaHumanMethylationEPICv2manifest (>= 1.0.0),
+    IlluminaHumanMethylationEPICv2anno.20a1.hg38 (>= 1.0.0)
