@@ -9,6 +9,6 @@
 summary_detectionP <- function(detP) {
   do.call(cbind, lapply(as.data.frame(detP), summary)) %>%
     t() %>%
-    as.data.frame() %>%
-    dplyr::arrange(desc(Mean))
+    as.data.frame() -> output
+  output
 }
