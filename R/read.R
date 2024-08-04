@@ -2,7 +2,7 @@
 
 #' Is an object of minfi classes annotated?
 #'
-#' See minif classes in [The minfi User's Guide](https://bioconductor.org/packages/release/bioc/vignettes/minfi/inst/doc/minfi.html#2_minfi).
+#' See minif classes in \href{https://bioconductor.org/packages/release/bioc/vignettes/minfi/inst/doc/minfi.html#2_minfi}{The minfi User's Guide}.
 #'
 #' @param x An object of minfi classes.
 #' @returns A bool vector of length 1.

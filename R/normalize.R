@@ -222,7 +222,7 @@ normalize.dkfz <- function(rgset, map_to_genome = TRUE) {
 #'
 #' @param rgset An object of \code{\link[minfi]{RGChannelSet-class}}.
 #' @param scale_to A numeric value to scale to.
-#' @return An object of \code{\link[minfi]{RGChannelSet-class}}.
+#' @returns An object of \code{\link[minfi]{RGChannelSet-class}}.
 #' @export
 dye_bias_correction <- function(rgset, scale_to = 10000) {
   # Borrow from minfi::normalize.illumina.control()
