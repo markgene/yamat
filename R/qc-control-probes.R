@@ -557,6 +557,7 @@ get_nonpolymorphic_red_qc <- function(ctrl_probes) {
 #' @param ctrl_probes The object returned by \code{\link{control_probe_intensities}}.
 #' @param background_offset background correction offset. Default to 3000.
 #' @returns A data frame of QC metrics.
+#' @export
 get_control_probe_qc_metrics <- function(rgset, background_offset = 3000) {
   qc_df <- minfi::pData(rgset) %>%
     as.data.frame()
