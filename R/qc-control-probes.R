@@ -113,6 +113,7 @@ get_extension_red_qc <- function(ctrl_probes) {
 #' Get QC metric of restoration probe.
 #'
 #' @param ctrl_probes The object returned by \code{\link{control_probe_intensities}}.
+#' @param background_offset background correction offset. Default to 3000.
 #' @returns A data frame of QC metrics.
 get_restoration_qc <- function(ctrl_probes, background_offset = 3000) {
   restoration_green <- ctrl_probes %>%
@@ -166,6 +167,7 @@ get_hybridization_green_qc <- function(ctrl_probes) {
 #' It is only on green channel.
 #'
 #' @param ctrl_probes The object returned by \code{\link{control_probe_intensities}}.
+#' @param background_offset background correction offset. Default to 3000.
 #' @returns A data frame of QC metrics.
 get_target_removal_qc <- function(ctrl_probes, background_offset = 3000) {
   target_removal_probes <- ctrl_probes %>%
@@ -200,6 +202,7 @@ get_target_removal_qc <- function(ctrl_probes, background_offset = 3000) {
 #' are actually on red channel. I use probes C1-C2 and U1-U2 in this function.
 #'
 #' @param ctrl_probes The object returned by \code{\link{control_probe_intensities}}.
+#' @param background_offset background correction offset. Default to 3000.
 #' @returns A data frame of QC metrics.
 get_bisulfite_converstion_type_1_green_qc <- function(ctrl_probes, background_offset = 3000) {
   bisulfite_converstion_type_1_green_cu_ratio <- ctrl_probes %>%
@@ -253,6 +256,7 @@ get_bisulfite_converstion_type_1_green_qc <- function(ctrl_probes, background_of
 #' are actually on red channel too. I use probes C3-C6 and U3-U6 in this function.
 #'
 #' @param ctrl_probes The object returned by \code{\link{control_probe_intensities}}.
+#' @param background_offset background correction offset. Default to 3000.
 #' @returns A data frame of QC metrics.
 get_bisulfite_converstion_type_1_red_qc <- function(ctrl_probes, background_offset = 3000) {
   bisulfite_converstion_type_1_red_cu_ratio <- ctrl_probes %>%
@@ -311,6 +315,7 @@ get_bisulfite_converstion_type_1_red_qc <- function(ctrl_probes, background_offs
 #' Only on red channel.
 #'
 #' @param ctrl_probes The object returned by \code{\link{control_probe_intensities}}.
+#' @param background_offset background correction offset. Default to 3000.
 #' @returns A data frame of QC metrics.
 get_bisulfite_converstion_type_2_qc <- function(ctrl_probes, background_offset = 3000) {
   bisulfite_converstion_type_2_cu_ratio <- ctrl_probes %>%
@@ -437,6 +442,7 @@ get_specificity_type_1_red_qc <- function(ctrl_probes) {
 #' Get QC metric of specificity of type II probe design probes.
 #'
 #' @param ctrl_probes The object returned by \code{\link{control_probe_intensities}}.
+#' @param background_offset background correction offset. Default to 3000.
 #' @returns A data frame of QC metrics.
 get_specificity_type_2_qc <- function(ctrl_probes, background_offset = 3000) {
   specificity_type_2_lowest_red_highest_green_ratio <- ctrl_probes %>%
@@ -543,4 +549,52 @@ get_nonpolymorphic_red_qc <- function(ctrl_probes) {
       Nonpolymorphic_Red_Highest_CG
     )
   nonpolymorphic_red_probes
+}
+
+
+#' Get QC metrics of control probes.
+#'
+#' @param ctrl_probes The object returned by \code{\link{control_probe_intensities}}.
+#' @param background_offset background correction offset. Default to 3000.
+#' @returns A data frame of QC metrics.
+get_control_probe_qc_metrics <- function(rgset, background_offset = 3000) {
+  qc_df <- minfi::pData(rgset) %>%
+    as.data.frame()
+  restoration <- get_restoration_qc(ctrl_probes, background_offset = background_offset)
+  qc_df <- dplyr::left_join(qc_df, restoration, by = c("Basename" = "Sample"))
+  staining_green <- get_staining_green_qc(ctrl_probes)
+  qc_df <- dplyr::left_join(qc_df, staining_green, by = c("Basename" = "Sample"))
+  staining_red <- get_staining_red_qc(ctrl_probes)
+  qc_df <- dplyr::left_join(qc_df, staining_red, by = c("Basename" = "Sample"))
+  extension_green <- get_extension_green_qc(ctrl_probes)
+  qc_df <- dplyr::left_join(qc_df, extension_green, by = c("Basename" = "Sample"))
+  extension_red <- get_extension_red_qc(ctrl_probes)
+  qc_df <- dplyr::left_join(qc_df, extension_red, by = c("Basename" = "Sample"))
+  hybridization_green <- get_hybridization_green_qc(ctrl_probes)
+  qc_df <- dplyr::left_join(qc_df, hybridization_green, by = c("Basename" = "Sample"))
+  target_removal <- get_target_removal_qc(ctrl_probes, background_offset = background_offset)
+  qc_df <- dplyr::left_join(qc_df, target_removal, by = c("Basename" = "Sample"))
+  bisulfite_converstion_type_1_green_qc <- get_bisulfite_converstion_type_1_green_qc(ctrl_probes, background_offset = background_offset)
+  qc_df <- dplyr::left_join(qc_df,
+                            bisulfite_converstion_type_1_green_qc,
+                            by = c("Basename" = "Sample"))
+  bisulfite_converstion_type_1_red_qc <- get_bisulfite_converstion_type_1_red_qc(ctrl_probes, background_offset = background_offset)
+  qc_df <- dplyr::left_join(qc_df,
+                            bisulfite_converstion_type_1_red_qc,
+                            by = c("Basename" = "Sample"))
+  bisulfite_converstion_type_2_qc <- get_bisulfite_converstion_type_2_qc(ctrl_probes, background_offset = background_offset)
+  qc_df <- dplyr::left_join(qc_df,
+                            bisulfite_converstion_type_2_qc,
+                            by = c("Basename" = "Sample"))
+  specificity_type_1_green <- get_specificity_type_1_green_qc(ctrl_probes)
+  qc_df <- dplyr::left_join(qc_df, specificity_type_1_green, by = c("Basename" = "Sample"))
+  specificity_type_1_red <- get_specificity_type_1_red_qc(ctrl_probes)
+  qc_df <- dplyr::left_join(qc_df, specificity_type_1_red, by = c("Basename" = "Sample"))
+  specificity_type_2 <- get_specificity_type_2_qc(ctrl_probes, background_offset = background_offset)
+  qc_df <- dplyr::left_join(qc_df, specificity_type_2, by = c("Basename" = "Sample"))
+  nonpolymorphic_green <- get_nonpolymorphic_green_qc(ctrl_probes)
+  qc_df <- dplyr::left_join(qc_df, nonpolymorphic_green, by = c("Basename" = "Sample"))
+  nonpolymorphic_red <- get_nonpolymorphic_red_qc(ctrl_probes)
+  qc_df <- dplyr::left_join(qc_df, nonpolymorphic_red, by = c("Basename" = "Sample"))
+  qc_df
 }
