@@ -12,9 +12,9 @@ get_staining_green_qc <- function(ctrl_probes) {
     dplyr::group_by(Sample, Expected_Grn) %>%
     dplyr::summarize(Mean_Intensity = mean(Intensity)) %>%
     dplyr::ungroup() %>%
-    pivot_wider(data = .,
-                names_from = "Expected_Grn",
-                values_from = "Mean_Intensity") %>%
+    tidyr::pivot_wider(data = .,
+                       names_from = "Expected_Grn",
+                       values_from = "Mean_Intensity") %>%
     dplyr::mutate(Staining_Green_High_Background_Ratio = High / Background) %>%
     dplyr::rename(
       Staining_Green_High_Mean_Intensity = High,
@@ -34,9 +34,9 @@ get_staining_red_qc <- function(ctrl_probes) {
     dplyr::group_by(Sample, Expected_Red) %>%
     dplyr::summarize(Mean_Intensity = mean(Intensity)) %>%
     dplyr::ungroup() %>%
-    pivot_wider(data = .,
-                names_from = "Expected_Red",
-                values_from = "Mean_Intensity") %>%
+    tidyr::pivot_wider(data = .,
+                       names_from = "Expected_Red",
+                       values_from = "Mean_Intensity") %>%
     dplyr::mutate(Staining_Red_High_Background_Ratio = High / Background) %>%
     dplyr::rename(
       Staining_Red_High_Mean_Intensity = High,
@@ -60,7 +60,7 @@ get_extension_green_qc <- function(ctrl_probes) {
     dplyr::summarize(Min_Intensity = min(Intensity),
                      Max_Intensity = max(Intensity)) %>%
     dplyr::ungroup() %>%
-    pivot_wider(
+    tidyr::pivot_wider(
       data = .,
       names_from = "Expected_Grn2",
       values_from = c("Min_Intensity", "Max_Intensity")
@@ -92,7 +92,7 @@ get_extension_red_qc <- function(ctrl_probes) {
     dplyr::summarize(Min_Intensity = min(Intensity),
                      Max_Intensity = max(Intensity)) %>%
     dplyr::ungroup() %>%
-    pivot_wider(
+    tidyr::pivot_wider(
       data = .,
       names_from = "Expected_Red2",
       values_from = c("Min_Intensity", "Max_Intensity")
@@ -123,7 +123,7 @@ get_restoration_qc <- function(ctrl_probes, background_offset = 3000) {
     dplyr::ungroup() %>%
     dplyr::select(-ExtendedType)
   extension_green <- get_extension_green_qc(ctrl_probes)
-  restoration_probes <- left_join(restoration_green, extension_green, by = "Sample") %>%
+  restoration_probes <- dplyr::left_join(restoration_green, extension_green, by = "Sample") %>%
     dplyr::mutate(
       Restoration_Green_Background_Ratio = Mean_Intensity / (Extension_Green_Highest_AT + background_offset)
     ) %>%
@@ -146,9 +146,9 @@ get_hybridization_green_qc <- function(ctrl_probes) {
     dplyr::group_by(Sample, Expected_Grn) %>%
     dplyr::summarize(Mean_Intensity = mean(Intensity)) %>%
     dplyr::ungroup() %>%
-    pivot_wider(data = .,
-                names_from = "Expected_Grn",
-                values_from = "Mean_Intensity") %>%
+    tidyr::pivot_wider(data = .,
+                       names_from = "Expected_Grn",
+                       values_from = "Mean_Intensity") %>%
     dplyr::mutate(
       Hybridization_Green_High_Medium_Ratio = High / Medium,
       Hybridization_Green_Medium_Low_Ratio = Medium / Low,
@@ -175,15 +175,15 @@ get_target_removal_qc <- function(ctrl_probes, background_offset = 3000) {
     dplyr::group_by(Sample, ExtendedType) %>%
     dplyr::summarize(Mean_Intensity = mean(Intensity)) %>%
     dplyr::ungroup() %>%
-    pivot_wider(data = .,
-                names_from = "ExtendedType",
-                values_from = "Mean_Intensity") %>%
+    tidyr::pivot_wider(data = .,
+                       names_from = "ExtendedType",
+                       values_from = "Mean_Intensity") %>%
     dplyr::rename(
       Target_Removal_1_Control_Intensity = `Target Removal 1`,
       Target_Removal_2_Control_Intensity = `Target Removal 2`,
     )
   extension_green <- get_extension_green_qc(ctrl_probes)
-  target_removal <- left_join(target_removal_probes, extension_green, by = "Sample") %>%
+  target_removal <- dplyr::left_join(target_removal_probes, extension_green, by = "Sample") %>%
     dplyr::mutate(
       Target_Removal_1_Background_Control_Ratio =  (Extension_Green_Highest_AT + background_offset) / Target_Removal_1_Control_Intensity,
       Target_Removal_2_Background_Control_Ratio =  (Extension_Green_Highest_AT + background_offset) / Target_Removal_2_Control_Intensity
@@ -216,7 +216,7 @@ get_bisulfite_converstion_type_1_green_qc <- function(ctrl_probes, background_of
     dplyr::summarize(Min_Intensity = min(Intensity),
                      Max_Intensity = max(Intensity)) %>%
     dplyr::ungroup() %>%
-    pivot_wider(
+    tidyr::pivot_wider(
       data = .,
       names_from = "Converted_Unconverted",
       values_from = c("Min_Intensity", "Max_Intensity")
@@ -235,9 +235,9 @@ get_bisulfite_converstion_type_1_green_qc <- function(ctrl_probes, background_of
       Bisulfite_Conversion_Type_I_Probe_Design_Green_Highest_Unconverted,
     )
   extension_green <- get_extension_green_qc(ctrl_probes)
-  bisulfite_converstion_type_1_green <- left_join(bisulfite_converstion_type_1_green_cu_ratio,
-                                                  extension_green,
-                                                  by = "Sample") %>%
+  bisulfite_converstion_type_1_green <- dplyr::left_join(bisulfite_converstion_type_1_green_cu_ratio,
+                                                         extension_green,
+                                                         by = "Sample") %>%
     dplyr::mutate(
       Bisulfite_Conversion_Type_I_Probe_Design_Green_Background_Highest_Unconverted_Ratio =
         (Extension_Green_Highest_AT + background_offset) / Bisulfite_Conversion_Type_I_Probe_Design_Green_Highest_Unconverted
@@ -280,7 +280,7 @@ get_bisulfite_converstion_type_1_red_qc <- function(ctrl_probes, background_offs
     dplyr::summarize(Min_Intensity = min(Intensity),
                      Max_Intensity = max(Intensity)) %>%
     dplyr::ungroup() %>%
-    pivot_wider(
+    tidyr::pivot_wider(
       data = .,
       names_from = "Converted_Unconverted",
       values_from = c("Min_Intensity", "Max_Intensity")
@@ -299,9 +299,9 @@ get_bisulfite_converstion_type_1_red_qc <- function(ctrl_probes, background_offs
       Bisulfite_Conversion_Type_I_Probe_Design_Red_Highest_Unconverted,
     )
   extension_red <- get_extension_red_qc(ctrl_probes)
-  bisulfite_converstion_type_1_red <- left_join(bisulfite_converstion_type_1_red_cu_ratio,
-                                                extension_red,
-                                                by = "Sample") %>%
+  bisulfite_converstion_type_1_red <- dplyr::left_join(bisulfite_converstion_type_1_red_cu_ratio,
+                                                       extension_red,
+                                                       by = "Sample") %>%
     dplyr::mutate(
       Bisulfite_Conversion_Type_I_Probe_Design_Red_Background_Highest_Unconverted_Ratio = (Extension_Red_Highest_CG + background_offset) / Bisulfite_Conversion_Type_I_Probe_Design_Red_Highest_Unconverted
     ) %>%
@@ -325,7 +325,7 @@ get_bisulfite_converstion_type_2_qc <- function(ctrl_probes, background_offset =
     dplyr::summarize(Min_Intensity = min(Intensity),
                      Max_Intensity = max(Intensity)) %>%
     dplyr::ungroup() %>%
-    pivot_wider(
+    tidyr::pivot_wider(
       data = .,
       names_from = "Converted_Unconverted",
       values_from = c("Min_Intensity", "Max_Intensity")
@@ -344,9 +344,9 @@ get_bisulfite_converstion_type_2_qc <- function(ctrl_probes, background_offset =
       Bisulfite_Conversion_Type_II_Probe_Design_Highest_Unconverted,
     )
   extension_green <- get_extension_green_qc(ctrl_probes)
-  bisulfite_converstion_type_2 <- left_join(bisulfite_converstion_type_2_cu_ratio,
-                                            extension_green,
-                                            by = "Sample") %>%
+  bisulfite_converstion_type_2 <- dplyr::left_join(bisulfite_converstion_type_2_cu_ratio,
+                                                   extension_green,
+                                                   by = "Sample") %>%
     dplyr::mutate(
       Bisulfite_Conversion_Type_II_Probe_Design_Background_Highest_Unconverted_Ratio = (Extension_Green_Highest_AT + background_offset) / Bisulfite_Conversion_Type_II_Probe_Design_Highest_Unconverted
     ) %>%
@@ -375,7 +375,7 @@ get_specificity_type_1_green_qc <- function(ctrl_probes) {
     dplyr::summarize(Min_Intensity = min(Intensity),
                      Max_Intensity = max(Intensity)) %>%
     dplyr::ungroup() %>%
-    pivot_wider(
+    tidyr::pivot_wider(
       data = .,
       names_from = "Matched",
       values_from = c("Min_Intensity", "Max_Intensity")
@@ -417,7 +417,7 @@ get_specificity_type_1_red_qc <- function(ctrl_probes) {
     dplyr::summarize(Min_Intensity = min(Intensity),
                      Max_Intensity = max(Intensity)) %>%
     dplyr::ungroup() %>%
-    pivot_wider(
+    tidyr::pivot_wider(
       data = .,
       names_from = "Matched",
       values_from = c("Min_Intensity", "Max_Intensity")
@@ -451,7 +451,7 @@ get_specificity_type_2_qc <- function(ctrl_probes, background_offset = 3000) {
     dplyr::summarize(Min_Intensity = min(Intensity),
                      Max_Intensity = max(Intensity)) %>%
     dplyr::ungroup() %>%
-    pivot_wider(
+    tidyr::pivot_wider(
       data = .,
       names_from = "Channel",
       values_from = c("Min_Intensity", "Max_Intensity")
@@ -470,9 +470,9 @@ get_specificity_type_2_qc <- function(ctrl_probes, background_offset = 3000) {
       Specificity_Type_II_Probe_Design_Highest_Green,
     )
   extension_green <- get_extension_green_qc(ctrl_probes)
-  specificity_type_2 <- left_join(specificity_type_2_lowest_red_highest_green_ratio,
-                                  extension_green,
-                                  by = "Sample") %>%
+  specificity_type_2 <- dplyr::left_join(specificity_type_2_lowest_red_highest_green_ratio,
+                                         extension_green,
+                                         by = "Sample") %>%
     dplyr::mutate(
       Specificity_Type_II_Probe_Design_Background_Highest_Green_Ratio = (Extension_Green_Highest_AT + background_offset) / Specificity_Type_II_Probe_Design_Highest_Green
     ) %>%
@@ -498,7 +498,7 @@ get_nonpolymorphic_green_qc <- function(ctrl_probes) {
     dplyr::summarize(Min_Intensity = min(Intensity),
                      Max_Intensity = max(Intensity)) %>%
     dplyr::ungroup() %>%
-    pivot_wider(
+    tidyr::pivot_wider(
       data = .,
       names_from = "Expected_Grn2",
       values_from = c("Min_Intensity", "Max_Intensity")
@@ -532,7 +532,7 @@ get_nonpolymorphic_red_qc <- function(ctrl_probes) {
     dplyr::summarize(Min_Intensity = min(Intensity),
                      Max_Intensity = max(Intensity)) %>%
     dplyr::ungroup() %>%
-    pivot_wider(
+    tidyr::pivot_wider(
       data = .,
       names_from = "Expected_Red2",
       values_from = c("Min_Intensity", "Max_Intensity")
@@ -554,13 +554,14 @@ get_nonpolymorphic_red_qc <- function(ctrl_probes) {
 
 #' Get QC metrics of control probes.
 #'
-#' @param ctrl_probes The object returned by \code{\link{control_probe_intensities}}.
+#' @param rgset An object of \code{\link[minfi]{RGChannelSet-class}}.
 #' @param background_offset background correction offset. Default to 3000.
 #' @returns A data frame of QC metrics.
 #' @export
 get_control_probe_qc_metrics <- function(rgset, background_offset = 3000) {
   qc_df <- minfi::pData(rgset) %>%
     as.data.frame()
+  ctrl_probes <- control_probe_intensities(rgset)
   restoration <- get_restoration_qc(ctrl_probes, background_offset = background_offset)
   qc_df <- dplyr::left_join(qc_df, restoration, by = c("Basename" = "Sample"))
   staining_green <- get_staining_green_qc(ctrl_probes)
