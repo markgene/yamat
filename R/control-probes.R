@@ -223,7 +223,9 @@ control_probe_intensities <- function(x) {
     )) %>%
     # Non-polymorphic
     dplyr::mutate(Expected_Grn = ifelse(
-      ExtendedType == "NP (C)" | stringr::str_detect(ExtendedType, "^NP \\(G\\)"),
+      # Five extra NP (G) probes are uncertain of their use.
+      # ExtendedType == "NP (C)" | stringr::str_detect(ExtendedType, "^NP \\(G\\)"),
+      ExtendedType %in% c("NP (C)", "NP (G)"),
       "High",
       Expected_Grn
     )) %>%
@@ -346,9 +348,6 @@ control_probe_intensities <- function(x) {
       Expected_Red = forcats::fct_relevel(Expected_Red, "High")
     ) %>%
     dplyr::mutate(
-      Type = stringr::str_replace(Type, "BISULFITE ", "BISULFITE\n")
-    ) %>%
-    dplyr::mutate(
       Type = forcats::fct_relevel(
         Type,
         # Sample-independent
@@ -357,7 +356,7 @@ control_probe_intensities <- function(x) {
         "TARGET REMOVAL",
         "HYBRIDIZATION",
         # Sample-dependent
-        "BISULFITE\nCONVERSION I", "BISULFITE\nCONVERSION II",
+        "BISULFITE CONVERSION I", "BISULFITE CONVERSION II",
         "SPECIFICITY I", "SPECIFICITY II",
         "NON-POLYMORPHIC",
         "NEGATIVE",
