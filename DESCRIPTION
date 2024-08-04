@@ -19,7 +19,8 @@ Imports:
     minfi (>= 1.27.0),
     GEOquery (>= 2.49.1),
     Biobase (>= 2.41.2),
-    R.utils (>= 2.7.0)
+    R.utils (>= 2.7.0),
+    logger (>= 0.3.0)
 RoxygenNote: 6.1.1
 Suggests: 
     testthat (>= 2.0.0),

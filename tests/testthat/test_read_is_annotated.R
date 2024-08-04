@@ -1,6 +1,6 @@
 context("is_annotated()")
 library(yamat)
-library(minfi)
+library(minfiData)
 
 skip_flag <- FALSE
 
