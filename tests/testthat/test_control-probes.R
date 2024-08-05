@@ -16,4 +16,3 @@ test_that("plot_control_probes()", {
 
 if (file.exists("Rplots.pdf"))
   file.remove("Rplots.pdf")
-
