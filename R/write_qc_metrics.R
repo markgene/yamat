@@ -9,20 +9,52 @@
 #' @param excel_file output Excel file.
 #' @param beta_value_distribution_file the plot file for beta value distribution.
 #' @returns a Workbook object.
-write_qc_metrics_excel <- function(qc_df,
+write_qc_metrics_excel <- function(qc,
                                    excel_file,
                                    beta_value_distribution_file = NULL) {
   # Create a new workbook and add a worksheet
   wb <- openxlsx::createWorkbook()
-  addWorksheet(wb, "Metrics")
-  addWorksheet(wb, "Raw")
+  openxlsx::addWorksheet(wb, "Metrics")
+  openxlsx::addWorksheet(wb, "Raw")
+  # Add extra columns to Metrics and Raw spreadsheets
+  if (!"Sentrix_ID" %in% colnames(qc)) {
+    qc$Sentrix_ID <- get_sentrix_id(qc$InternalSampleId)
+  }
+  if (!"Sentrix_Position" %in% colnames(qc)) {
+    qc$Sentrix_Position <- get_sentrix_position(qc$InternalSampleId)
+  }
+  qc_raw <- qc %>%
+    dplyr::select(Sentrix_ID, Sentrix_Position, everything())
+  # Add extra columns to Metrics spreadsheet
+  if (!"Sample_ID" %in% colnames(qc)) {
+    qc$Sample_ID <- ""
+  }
+  if (!"Sample_Description" %in% colnames(qc)) {
+    qc$Sample_Description <- ""
+  }
+  if (!"QC" %in% colnames(qc)) {
+    qc$QC <- ""
+  }
+  if (!"Note" %in% colnames(qc)) {
+    qc$Note <- ""
+  }
+  qc_review <- qc %>%
+    dplyr::select(Sentrix_ID,
+                  Sentrix_Position,
+                  Sample_ID,
+                  QC,
+                  Note,
+                  everything())
   # Write raw
-  writeData(wb, "Raw", qc_df)
+  openxlsx::writeData(wb, "Raw", qc_raw)
   # Metrics
   metric_column_names <- c(
     "Sentrix_ID",
     "Sentrix_Position",
     "Sample_ID",
+    "Sample_Description",
+    "QC",
+    "Note",
     "Mean_Detection_P_Value",
     "Probe_Detection_P_Value_Less_than_or_Equal_01_Percent",
     "Probe_Detection_P_Value_Less_than_or_Equal_05_Percent",
@@ -52,16 +84,16 @@ write_qc_metrics_excel <- function(qc_df,
     "Predicted_Gender"
   )
   # Write data to the worksheet
-  metrics <- qc_df[, metric_column_names]
-  writeData(wb, "Metrics", metrics)
+  metrics <- qc_review[, metric_column_names]
+  openxlsx::writeData(wb, "Metrics", metrics)
 
   # Apply conditional formatting
   # Green for scores greater than 90
-  sample_row_index <- 2:(nrow(qc_df) + 1)
-  fail_style <- createStyle(fontColour = "#e3f9fd", bgFill = "#fc3939")
-  warning_style <- createStyle(fontColour = "#e3f9fd", bgFill = "#efa31d")
+  sample_row_index <- 2:(nrow(qc) + 1)
+  fail_style <- openxlsx::createStyle(fontColour = "#e3f9fd", bgFill = "#fc3939")
+  warning_style <- openxlsx::createStyle(fontColour = "#e3f9fd", bgFill = "#efa31d")
   mean_detection_p_value_col_index <- which(colnames(metrics) == "Mean_Detection_P_Value")
-  conditionalFormatting(
+  openxlsx::conditionalFormatting(
     wb,
     "Metrics",
     cols = mean_detection_p_value_col_index,
@@ -69,7 +101,7 @@ write_qc_metrics_excel <- function(qc_df,
     rule = '>0.01',
     style = warning_style
   )
-  conditionalFormatting(
+  openxlsx::conditionalFormatting(
     wb,
     "Metrics",
     cols = mean_detection_p_value_col_index,
@@ -78,7 +110,7 @@ write_qc_metrics_excel <- function(qc_df,
     style = fail_style
   )
   restoration_green_background_ratio_index <- which(colnames(metrics) == "Restoration_Green_Background_Ratio")
-  conditionalFormatting(
+  openxlsx::conditionalFormatting(
     wb,
     "Metrics",
     cols = restoration_green_background_ratio_index,
@@ -86,7 +118,7 @@ write_qc_metrics_excel <- function(qc_df,
     rule = "<=1",
     style = warning_style
   )
-  conditionalFormatting(
+  openxlsx::conditionalFormatting(
     wb,
     "Metrics",
     cols = restoration_green_background_ratio_index,
@@ -97,7 +129,7 @@ write_qc_metrics_excel <- function(qc_df,
   bisulfite_conversion_type_i_probe_design_green_converted_unconverted_ratio_index <- which(
     colnames(metrics) == "Bisulfite_Conversion_Type_I_Probe_Design_Green_Converted_Unconverted_Ratio"
   )
-  conditionalFormatting(
+  openxlsx::conditionalFormatting(
     wb,
     "Metrics",
     cols = bisulfite_conversion_type_i_probe_design_green_converted_unconverted_ratio_index,
@@ -108,7 +140,7 @@ write_qc_metrics_excel <- function(qc_df,
   bisulfite_conversion_type_i_probe_design_green_background_highest_unconverted_ratio_index <- which(
     colnames(metrics) == "Bisulfite_Conversion_Type_I_Probe_Design_Green_Background_Highest_Unconverted_Ratio"
   )
-  conditionalFormatting(
+  openxlsx::conditionalFormatting(
     wb,
     "Metrics",
     cols = bisulfite_conversion_type_i_probe_design_green_background_highest_unconverted_ratio_index,
@@ -119,7 +151,7 @@ write_qc_metrics_excel <- function(qc_df,
   bisulfite_conversion_type_i_probe_design_red_converted_unconverted_ratio_index <- which(
     colnames(metrics) == "Bisulfite_Conversion_Type_I_Probe_Design_Red_Converted_Unconverted_Ratio"
   )
-  conditionalFormatting(
+  openxlsx::conditionalFormatting(
     wb,
     "Metrics",
     cols = bisulfite_conversion_type_i_probe_design_red_converted_unconverted_ratio_index,
@@ -130,7 +162,7 @@ write_qc_metrics_excel <- function(qc_df,
   bisulfite_conversion_type_i_probe_design_red_background_highest_unconverted_ratio_index <- which(
     colnames(metrics) == "Bisulfite_Conversion_Type_I_Probe_Design_Red_Background_Highest_Unconverted_Ratio"
   )
-  conditionalFormatting(
+  openxlsx::conditionalFormatting(
     wb,
     "Metrics",
     cols = bisulfite_conversion_type_i_probe_design_red_background_highest_unconverted_ratio_index,
@@ -141,7 +173,7 @@ write_qc_metrics_excel <- function(qc_df,
   bisulfite_conversion_type_ii_probe_design_converted_unconverted_ratio_index <- which(
     colnames(metrics) == "Bisulfite_Conversion_Type_II_Probe_Design_Converted_Unconverted_Ratio"
   )
-  conditionalFormatting(
+  openxlsx::conditionalFormatting(
     wb,
     "Metrics",
     cols = bisulfite_conversion_type_ii_probe_design_converted_unconverted_ratio_index,
@@ -152,7 +184,7 @@ write_qc_metrics_excel <- function(qc_df,
   bisulfite_conversion_type_ii_probe_design_background_highest_unconverted_ratio_index <- which(
     colnames(metrics) == "Bisulfite_Conversion_Type_II_Probe_Design_Background_Highest_Unconverted_Ratio"
   )
-  conditionalFormatting(
+  openxlsx::conditionalFormatting(
     wb,
     "Metrics",
     cols = bisulfite_conversion_type_ii_probe_design_background_highest_unconverted_ratio_index,
@@ -161,7 +193,7 @@ write_qc_metrics_excel <- function(qc_df,
     style = warning_style
   )
   hybridization_green_high_medium_ratio_index <- which(colnames(metrics) == "Hybridization_Green_High_Medium_Ratio")
-  conditionalFormatting(
+  openxlsx::conditionalFormatting(
     wb,
     "Metrics",
     cols = hybridization_green_high_medium_ratio_index,
@@ -170,7 +202,7 @@ write_qc_metrics_excel <- function(qc_df,
     style = warning_style
   )
   hybridization_green_medium_low_ratio_index <- which(colnames(metrics) == "Hybridization_Green_Medium_Low_Ratio")
-  conditionalFormatting(
+  openxlsx::conditionalFormatting(
     wb,
     "Metrics",
     cols = hybridization_green_medium_low_ratio_index,
@@ -179,7 +211,7 @@ write_qc_metrics_excel <- function(qc_df,
     style = warning_style
   )
   extension_green_lowest_cg_highest_at_ratio_index <- which(colnames(metrics) == "Extension_Green_Lowest_CG_Highest_AT_Ratio")
-  conditionalFormatting(
+  openxlsx::conditionalFormatting(
     wb,
     "Metrics",
     cols = extension_green_lowest_cg_highest_at_ratio_index,
@@ -188,7 +220,7 @@ write_qc_metrics_excel <- function(qc_df,
     style = warning_style
   )
   extension_red_lowest_at_highest_cg_ratio_index <- which(colnames(metrics) == "Extension_Red_Lowest_AT_Highest_CG_Ratio")
-  conditionalFormatting(
+  openxlsx::conditionalFormatting(
     wb,
     "Metrics",
     cols = extension_red_lowest_at_highest_cg_ratio_index,
@@ -197,7 +229,7 @@ write_qc_metrics_excel <- function(qc_df,
     style = warning_style
   )
   target_removal_1_background_control_ratio_index <- which(colnames(metrics) == "Target_Removal_1_Background_Control_Ratio")
-  conditionalFormatting(
+  openxlsx::conditionalFormatting(
     wb,
     "Metrics",
     cols = target_removal_1_background_control_ratio_index,
@@ -206,7 +238,7 @@ write_qc_metrics_excel <- function(qc_df,
     style = warning_style
   )
   target_removal_2_background_control_ratio_index <- which(colnames(metrics) == "Target_Removal_2_Background_Control_Ratio")
-  conditionalFormatting(
+  openxlsx::conditionalFormatting(
     wb,
     "Metrics",
     cols = target_removal_2_background_control_ratio_index,
@@ -215,7 +247,7 @@ write_qc_metrics_excel <- function(qc_df,
     style = warning_style
   )
   Staining_Green_High_Background_Ratio_index <- which(colnames(metrics) == "Staining_Green_High_Background_Ratio")
-  conditionalFormatting(
+  openxlsx::conditionalFormatting(
     wb,
     "Metrics",
     cols = Staining_Green_High_Background_Ratio_index,
@@ -224,7 +256,7 @@ write_qc_metrics_excel <- function(qc_df,
     style = warning_style
   )
   Staining_Red_High_Background_Ratio_index <- which(colnames(metrics) == "Staining_Red_High_Background_Ratio")
-  conditionalFormatting(
+  openxlsx::conditionalFormatting(
     wb,
     "Metrics",
     cols = Staining_Red_High_Background_Ratio_index,
@@ -235,7 +267,7 @@ write_qc_metrics_excel <- function(qc_df,
   Specificity_Type_I_Probe_Design_Green_Perfectly_Matched_Mismatched_Ratio_index <- which(
     colnames(metrics) == "Specificity_Type_I_Probe_Design_Green_Perfectly_Matched_Mismatched_Ratio"
   )
-  conditionalFormatting(
+  openxlsx::conditionalFormatting(
     wb,
     "Metrics",
     cols = Specificity_Type_I_Probe_Design_Green_Perfectly_Matched_Mismatched_Ratio_index,
@@ -246,7 +278,7 @@ write_qc_metrics_excel <- function(qc_df,
   Specificity_Type_I_Probe_Design_Red_Perfectly_Matched_Mismatched_Ratio_index <- which(
     colnames(metrics) == "Specificity_Type_I_Probe_Design_Red_Perfectly_Matched_Mismatched_Ratio"
   )
-  conditionalFormatting(
+  openxlsx::conditionalFormatting(
     wb,
     "Metrics",
     cols = Specificity_Type_I_Probe_Design_Red_Perfectly_Matched_Mismatched_Ratio_index,
@@ -257,7 +289,7 @@ write_qc_metrics_excel <- function(qc_df,
   Specificity_Type_II_Probe_Design_Lowest_Red_Highest_Green_Ratio_index <- which(
     colnames(metrics) == "Specificity_Type_II_Probe_Design_Lowest_Red_Highest_Green_Ratio"
   )
-  conditionalFormatting(
+  openxlsx::conditionalFormatting(
     wb,
     "Metrics",
     cols = Specificity_Type_II_Probe_Design_Lowest_Red_Highest_Green_Ratio_index,
@@ -268,7 +300,7 @@ write_qc_metrics_excel <- function(qc_df,
   Specificity_Type_II_Probe_Design_Background_Highest_Green_Ratio_index <- which(
     colnames(metrics) == "Specificity_Type_II_Probe_Design_Background_Highest_Green_Ratio"
   )
-  conditionalFormatting(
+  openxlsx::conditionalFormatting(
     wb,
     "Metrics",
     cols = Specificity_Type_II_Probe_Design_Background_Highest_Green_Ratio_index,
@@ -277,7 +309,7 @@ write_qc_metrics_excel <- function(qc_df,
     style = warning_style
   )
   Nonpolymorphic_Green_Lowest_CG_Highest_AT_Ratio_index <- which(colnames(metrics) == "Nonpolymorphic_Green_Lowest_CG_Highest_AT_Ratio")
-  conditionalFormatting(
+  openxlsx::conditionalFormatting(
     wb,
     "Metrics",
     cols = Nonpolymorphic_Green_Lowest_CG_Highest_AT_Ratio_index,
@@ -286,7 +318,7 @@ write_qc_metrics_excel <- function(qc_df,
     style = warning_style
   )
   Nonpolymorphic_Red_Lowest_AT_Highest_CG_Ratio_index <- which(colnames(metrics) == "Nonpolymorphic_Red_Lowest_AT_Highest_CG_Ratio")
-  conditionalFormatting(
+  openxlsx::conditionalFormatting(
     wb,
     "Metrics",
     cols = Nonpolymorphic_Red_Lowest_AT_Highest_CG_Ratio_index,
@@ -295,7 +327,7 @@ write_qc_metrics_excel <- function(qc_df,
     style = warning_style
   )
   Sum_Meth_Unmeth_Medians_Raw_index <- which(colnames(metrics) == "Sum_Meth_Unmeth_Medians_Raw")
-  conditionalFormatting(
+  openxlsx::conditionalFormatting(
     wb,
     "Metrics",
     cols = Sum_Meth_Unmeth_Medians_Raw_index,
@@ -305,29 +337,29 @@ write_qc_metrics_excel <- function(qc_df,
   )
   # Save the workbook
   # Color style description
-  fail_style2 <- createStyle(fontColour = "#e3f9fd", fgFill = "#fc3939")
-  warning_style2 <- createStyle(fontColour = "#e3f9fd", fgFill = "#efa31d")
+  fail_style2 <- openxlsx::createStyle(fontColour = "#e3f9fd", fgFill = "#fc3939")
+  warning_style2 <- openxlsx::createStyle(fontColour = "#e3f9fd", fgFill = "#efa31d")
   styles <- data.frame(
     Keys = c("Color Key", "Fail", "Warning", "Pass"),
     stringsAsFactors = FALSE
   )
-  writeData(wb,
+  openxlsx::writeData(wb,
             "Metrics",
             styles,
-            startRow = nrow(qc_df) + 4,
+            startRow = nrow(qc) + 4,
             colNames = FALSE)
-  addStyle(
+  openxlsx::addStyle(
     wb,
     "Metrics",
     cols = 1,
-    rows = nrow(qc_df) + 5,
+    rows = nrow(qc) + 5,
     style = fail_style2
   )
-  addStyle(
+  openxlsx::addStyle(
     wb,
     "Metrics",
     cols = 1,
-    rows = nrow(qc_df) + 6,
+    rows = nrow(qc) + 6,
     style = warning_style2
   )
   # Column description
@@ -364,22 +396,25 @@ write_qc_metrics_excel <- function(qc_df,
     ),
     stringsAsFactors = FALSE
   )
-  writeData(wb,
+  openxlsx::writeData(wb,
             "Metrics",
             description,
-            startRow = nrow(qc_df) + 10,
+            startRow = nrow(qc) + 10,
             colNames = FALSE)
   # Insert the beta value distribution plot
-  insertImage(
-    wb,
-    "Metrics",
-    beta_value_distribution_file,
-    width = 11 * 0.6,
-    height = 7 * 0.6,
-    startRow = nrow(qc_df) + 5,
-    startCol = 6,
-    units = "in",
-    dpi = 300
-  )
-  saveWorkbook(wb, excel_file, overwrite = TRUE)
+  if (!is.null(beta_value_distribution_file)) {
+    logger::log_debug("Insert beta value distribution plot")
+    openxlsx::insertImage(
+      wb,
+      "Metrics",
+      beta_value_distribution_file,
+      width = 11 * 0.8,
+      height = 7 * 0.8,
+      startRow = nrow(qc) + 5,
+      startCol = 6,
+      units = "in",
+      dpi = 300
+    )
+  }
+  openxlsx::saveWorkbook(wb, excel_file, overwrite = TRUE)
 }
