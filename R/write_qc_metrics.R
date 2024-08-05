@@ -39,6 +39,9 @@ write_qc_metrics_excel <- function(qc,
   if (!"Note" %in% colnames(qc)) {
     qc$Note <- ""
   }
+  if (!"Beta_Value_Distribution" %in% colnames(qc)) {
+    qc$Beta_Value_Distribution <- ""
+  }
   qc_review <- qc %>%
     dplyr::select(Sentrix_ID,
                   Sentrix_Position,
@@ -59,6 +62,7 @@ write_qc_metrics_excel <- function(qc,
     "Mean_Detection_P_Value",
     "Probe_Detection_P_Value_Less_than_or_Equal_01_Percent",
     "Probe_Detection_P_Value_Less_than_or_Equal_05_Percent",
+    "Beta_Value_Distribution",
     "Bisulfite_Conversion_Type_I_Probe_Design_Green_Converted_Unconverted_Ratio",
     "Bisulfite_Conversion_Type_I_Probe_Design_Green_Background_Highest_Unconverted_Ratio",
     "Bisulfite_Conversion_Type_I_Probe_Design_Red_Converted_Unconverted_Ratio",
