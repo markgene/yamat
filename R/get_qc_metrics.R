@@ -1,8 +1,5 @@
-# QC pipeline
+# Get QC metrics
 
-
-#' Get QC metrics
-#'
 #' Get QC metrics.
 #'
 #' @param rgset An object of \code{\link[minfi]{RGChannelSet-class}}.
