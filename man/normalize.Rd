@@ -4,9 +4,13 @@
 \alias{normalize}
 \title{Normalization wrapper.}
 \usage{
-normalize(rgset, norm_method = c("raw", "illumina", "swan", "quantile",
-  "noob", "funnorm", "yamat", "dkfz", "methylcnv"), map_to_genome = TRUE,
-  ...)
+normalize(
+  rgset,
+  norm_method = c("raw", "illumina", "swan", "quantile", "noob", "funnorm", "yamat",
+    "dkfz", "methylcnv"),
+  map_to_genome = TRUE,
+  ...
+)
 }
 \arguments{
 \item{rgset}{An object of \code{\link[minfi]{RGChannelSet-class}}.}

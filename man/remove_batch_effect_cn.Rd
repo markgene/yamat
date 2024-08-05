@@ -4,8 +4,7 @@
 \alias{remove_batch_effect_cn}
 \title{Remove batch effect: copy number}
 \usage{
-remove_batch_effect_cn(x, batch = NULL, batch2 = NULL, offset = 1,
-  ...)
+remove_batch_effect_cn(x, batch = NULL, batch2 = NULL, offset = 1, ...)
 }
 \arguments{
 \item{x}{An object of \code{\link[minfi]{RatioSet-class}} or

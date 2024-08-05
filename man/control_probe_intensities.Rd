@@ -15,5 +15,21 @@ A \code{data.frame} containing the following columns: Address, Type,
   Intensity.
 }
 \description{
-Get control probes and their raw intensities.
+Notes:
+}
+\details{
+1. There are conflictings between Illumina Infinium HD Methylation Assay
+(Document # 15019519 v10) and \href{https://help.dragenarray.illumina.com/product-guides/output-files#methyl_qc_report}{DRAGEN documentation}.
+The Illumina Infinium HD Methylation Assay said C1-C3 and U1-U3 are for
+bisulfite conversion I green channel. But based on DRAGEN document, C3 and U3
+are actually on red channel. I use probes C1-C2 and U1-U2 in this function.
+
+2. There are conflictings between Illumina Infinium HD Methylation Assay
+(Document # 15019519 v10) and [DRAGEN documentation](https://help.dragenarray.illumina.com/product-guides/output-files#methyl_qc_report).
+The Illumina Infinium HD Methylation Assay said C4-C6 and U4-U6 are for
+bisulfite conversion I green channel. But based on DRAGEN document, C3 and U3
+are actually on red channel too. I use probes C3-C6 and U3-U6 in this function.
+
+3. There are five extra NP (G) probes of uncertain use, which I do not use
+for non-polymorphic probe QC metric computation.
 }

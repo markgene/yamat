@@ -4,8 +4,15 @@
 \alias{remove_batch_effect}
 \title{Remove batch effect.}
 \usage{
-remove_batch_effect(x, batch = NULL, batch2 = NULL, method = c("mum",
-  "cn", "beta"), offset = 1, verbose = TRUE, ...)
+remove_batch_effect(
+  x,
+  batch = NULL,
+  batch2 = NULL,
+  method = c("mum", "cn", "beta"),
+  offset = 1,
+  verbose = TRUE,
+  ...
+)
 }
 \arguments{
 \item{x}{An object of \code{\link[minfi]{MethylSet-class}} or

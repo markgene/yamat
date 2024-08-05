@@ -4,8 +4,7 @@
 \alias{remove_batch_effect_mum}
 \title{Remove batch effect: methylation and unmethylation signals.}
 \usage{
-remove_batch_effect_mum(x, batch = NULL, batch2 = NULL, offset = 1,
-  ...)
+remove_batch_effect_mum(x, batch = NULL, batch2 = NULL, offset = 1, ...)
 }
 \arguments{
 \item{x}{An object of \code{\link[minfi]{MethylSet-class}} or

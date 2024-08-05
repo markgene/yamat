@@ -4,9 +4,15 @@
 \alias{qc}
 \title{Quality control}
 \usage{
-qc(rgset, report_dir, control_probe_plot_file = "control_probes.png",
-  detP_file = "detP.tab", pheno_file = "pheno.tab",
-  overwrite = FALSE, verbose = TRUE)
+qc(
+  rgset,
+  report_dir,
+  control_probe_plot_file = "control_probes.png",
+  detP_file = "detP.tab",
+  pheno_file = "pheno.tab",
+  overwrite = FALSE,
+  verbose = TRUE
+)
 }
 \arguments{
 \item{rgset}{An object of \code{\link[minfi]{RGChannelSet-class}}.}

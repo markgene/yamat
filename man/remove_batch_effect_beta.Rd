@@ -4,8 +4,7 @@
 \alias{remove_batch_effect_beta}
 \title{Remove batch effect: beta value.}
 \usage{
-remove_batch_effect_beta(x, batch = NULL, batch2 = NULL,
-  offset = 100, ...)
+remove_batch_effect_beta(x, batch = NULL, batch2 = NULL, offset = 100, ...)
 }
 \arguments{
 \item{x}{An object of \code{\link[minfi]{RatioSet-class}} or
