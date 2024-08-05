@@ -31,12 +31,18 @@ qc_pipe <- function(rgset,
   rgset <- get_qc_metrics(rgset)
   qc <- minfi::pData(rgset) %>%
     as.data.frame()
-  readr::write_csv(qc, file = file.path(output, qc_file))
   if (verbose) {
-    message("Plotting beta-value distribution")
+    logger::log_info(glue::glue("Write QC metrics into CSV {file.path(output, qc_csv)}"))
   }
+  readr::write_csv(qc, file = file.path(output, qc_csv))
   beta_value_distribution_path <- file.path(output, beta_value_distribution_file)
-  beta_value_histogram_fill_by_sample(rgset, output_file_name = beta_value_distribution_path, height = 7, width = 11)
+  if (verbose) {
+    logger::log_info(glue::glue("Plotting beta-value distribution {beta_value_distribution_path}"))
+  }
+  plot_beta_value_histogram_fill_by_sample(rgset, output_file = beta_value_distribution_path, height = 7, width = 11)
+  if (verbose) {
+    logger::log_info(glue::glue("Write QC metrics into Excel {file.path(output, qc_excel_file)}"))
+  }
   write_qc_metrics_excel(qc, excel_file = file.path(output, qc_excel_file))
   rgset
 }
