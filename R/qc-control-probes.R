@@ -561,7 +561,8 @@ get_nonpolymorphic_red_qc <- function(ctrl_probes) {
 get_control_probe_qc_metrics <- function(rgset, background_offset = 3000) {
   qc_df <- minfi::pData(rgset) %>%
     as.data.frame() %>%
-    tibble::rownames_to_column(var="InternalSampleId")
+    tibble::rownames_to_column(var="InternalSampleId") %>%
+    dplyr::select(InternalSampleId)
   ctrl_probes <- control_probe_intensities(rgset)
   restoration <- get_restoration_qc(ctrl_probes, background_offset = background_offset)
   qc_df <- dplyr::left_join(qc_df, restoration, by = c("InternalSampleId" = "Sample"))
