@@ -9,8 +9,8 @@
 plot_beta_value_histogram_fill_by_sample <- function (x, output_file, ...) {
   if (missing(x))
     stop("x is required.")
-  if (missing(output))
-    stop("output is required.")
+  if (missing(output_file))
+    stop("output_file is required.")
   if (is(x, "RGChannelSet") || is(x, "MethylSet")) {
     b <- getBeta(x)
   } else if (is(x, "matrix")) {
@@ -21,20 +21,20 @@ plot_beta_value_histogram_fill_by_sample <- function (x, output_file, ...) {
   }
   pal <- ggsci_pal_d(ggsci_pal_name = "jco", pal_size = ncol(x))
   as.data.frame(b) %>%
-    pivot_longer(.,
-                 cols = everything(),
-                 names_to = "Sample",
-                 values_to = "Beta") %>%
+    tidyr::pivot_longer(.,
+                        cols = everything(),
+                        names_to = "Sample",
+                        values_to = "Beta") %>%
     ggplot2::ggplot(., aes(x = Beta, fill = Sample)) +
     ggplot2::geom_histogram(binwidth = 0.01, boundary = 0) +
-    scale_fill_manual(values = pal, drop=FALSE) +
+    ggplot2::scale_fill_manual(values = pal, drop = FALSE) +
     ggplot2::facet_wrap(vars(Sample), ncol = 4, scales = "fixed") +
     ggplot2::scale_y_continuous(labels = scales::comma) +
     ggplot2::labs(x = "\u03b2 value", y = "No. of Probes", fill = "\u03b2 value") +
     ggplot2::guides(fill = "none") +
     ggplot2::theme_bw() +
     ggplot2::theme(
-      panel.grid = element_blank(),
+      panel.grid = ggplot2::element_blank(),
       legend.position = "right",
       # legend.key.height = unit(0.5, units = "in"),
       # legend.key.width = unit(0.3, units = "in"),
@@ -55,7 +55,7 @@ plot_beta_value_histogram_fill_by_sample <- function (x, output_file, ...) {
         negative control sample may have a unimodal with a peak close to 0.
         "
       ),
-      theme = theme(plot.subtitle = element_text(hjust = 0, size = 9))
+      theme = ggplot2::theme(plot.subtitle = ggplot2::element_text(hjust = 0, size = 9))
     ) -> p
   ggplot2::ggsave(filename = output_file, plot = p, ...)
   invisible(p)
