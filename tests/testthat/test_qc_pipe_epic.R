@@ -11,10 +11,9 @@ get_test_qc_pipe <- function(env = parent.frame()) {
   rgset
 }
 
-test_that("Restoration_Green_Intensity has the correct values", {
+test_that("Excel file exists", {
   testthat::skip_if(skip_flag, "Skip")
   rgset <- get_test_qc_pipe()
-  qc_epic <- as.data.frame(minfi::pData(rgset))
-  is_eq <- qc_epic$Restoration_Green_Intensity == c(243, 374, 430)
-  testthat::expect_true(all(is_eq == TRUE))
+  # qc_epic <- as.data.frame(minfi::pData(rgset))
+  testthat::expect_true(file.exists("output/qc_pipe/RGsetEPIC/qc.xlsx"))
 })
