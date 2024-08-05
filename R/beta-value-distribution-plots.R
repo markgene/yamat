@@ -43,8 +43,8 @@ plot_beta_value_histogram_fill_by_sample <- function (x, output_file, ...) {
       strip.text.x = element_text(size = 10)
     ) +
     patchwork::plot_annotation(
-      title = glue("\u03b2 value distribution"),
-      subtitle = glue(
+      title = glue::glue("\u03b2 value distribution"),
+      subtitle = glue::glue(
         "A typical sample is expect to have a bi-modal distribution with
         two peaks close to 0 (unmeth) and 1 (meth), because we expect
         most of the loci should have a certain methylation status. The
