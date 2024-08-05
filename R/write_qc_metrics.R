@@ -9,6 +9,7 @@
 #' @param excel_file output Excel file.
 #' @param beta_value_distribution_file the plot file for beta value distribution.
 #' @returns a Workbook object.
+#' @export
 write_qc_metrics_excel <- function(qc,
                                    excel_file,
                                    beta_value_distribution_file = NULL) {
