@@ -7,7 +7,7 @@ skip_flag <- FALSE
 
 get_test_qc_pipe <- function(env = parent.frame()) {
   message(paste("Start", Sys.time()))
-  rgset <- qc_pipe(RGsetEPIC, output = "qc_pipe_output/RGsetEPIC")
+  rgset <- qc_pipe(RGsetEPIC, output = "output/qc_pipe/RGsetEPIC")
   rgset
 }
 
