@@ -560,43 +560,44 @@ get_nonpolymorphic_red_qc <- function(ctrl_probes) {
 #' @export
 get_control_probe_qc_metrics <- function(rgset, background_offset = 3000) {
   qc_df <- minfi::pData(rgset) %>%
-    as.data.frame()
+    as.data.frame() %>%
+    tibble::rownames_to_column(var="InternalSampleId")
   ctrl_probes <- control_probe_intensities(rgset)
   restoration <- get_restoration_qc(ctrl_probes, background_offset = background_offset)
-  qc_df <- dplyr::left_join(qc_df, restoration, by = c("Basename" = "Sample"))
+  qc_df <- dplyr::left_join(qc_df, restoration, by = c("InternalSampleId" = "Sample"))
   staining_green <- get_staining_green_qc(ctrl_probes)
-  qc_df <- dplyr::left_join(qc_df, staining_green, by = c("Basename" = "Sample"))
+  qc_df <- dplyr::left_join(qc_df, staining_green, by = c("InternalSampleId" = "Sample"))
   staining_red <- get_staining_red_qc(ctrl_probes)
-  qc_df <- dplyr::left_join(qc_df, staining_red, by = c("Basename" = "Sample"))
+  qc_df <- dplyr::left_join(qc_df, staining_red, by = c("InternalSampleId" = "Sample"))
   extension_green <- get_extension_green_qc(ctrl_probes)
-  qc_df <- dplyr::left_join(qc_df, extension_green, by = c("Basename" = "Sample"))
+  qc_df <- dplyr::left_join(qc_df, extension_green, by = c("InternalSampleId" = "Sample"))
   extension_red <- get_extension_red_qc(ctrl_probes)
-  qc_df <- dplyr::left_join(qc_df, extension_red, by = c("Basename" = "Sample"))
+  qc_df <- dplyr::left_join(qc_df, extension_red, by = c("InternalSampleId" = "Sample"))
   hybridization_green <- get_hybridization_green_qc(ctrl_probes)
-  qc_df <- dplyr::left_join(qc_df, hybridization_green, by = c("Basename" = "Sample"))
+  qc_df <- dplyr::left_join(qc_df, hybridization_green, by = c("InternalSampleId" = "Sample"))
   target_removal <- get_target_removal_qc(ctrl_probes, background_offset = background_offset)
-  qc_df <- dplyr::left_join(qc_df, target_removal, by = c("Basename" = "Sample"))
+  qc_df <- dplyr::left_join(qc_df, target_removal, by = c("InternalSampleId" = "Sample"))
   bisulfite_converstion_type_1_green_qc <- get_bisulfite_converstion_type_1_green_qc(ctrl_probes, background_offset = background_offset)
   qc_df <- dplyr::left_join(qc_df,
                             bisulfite_converstion_type_1_green_qc,
-                            by = c("Basename" = "Sample"))
+                            by = c("InternalSampleId" = "Sample"))
   bisulfite_converstion_type_1_red_qc <- get_bisulfite_converstion_type_1_red_qc(ctrl_probes, background_offset = background_offset)
   qc_df <- dplyr::left_join(qc_df,
                             bisulfite_converstion_type_1_red_qc,
-                            by = c("Basename" = "Sample"))
+                            by = c("InternalSampleId" = "Sample"))
   bisulfite_converstion_type_2_qc <- get_bisulfite_converstion_type_2_qc(ctrl_probes, background_offset = background_offset)
   qc_df <- dplyr::left_join(qc_df,
                             bisulfite_converstion_type_2_qc,
-                            by = c("Basename" = "Sample"))
+                            by = c("InternalSampleId" = "Sample"))
   specificity_type_1_green <- get_specificity_type_1_green_qc(ctrl_probes)
-  qc_df <- dplyr::left_join(qc_df, specificity_type_1_green, by = c("Basename" = "Sample"))
+  qc_df <- dplyr::left_join(qc_df, specificity_type_1_green, by = c("InternalSampleId" = "Sample"))
   specificity_type_1_red <- get_specificity_type_1_red_qc(ctrl_probes)
-  qc_df <- dplyr::left_join(qc_df, specificity_type_1_red, by = c("Basename" = "Sample"))
+  qc_df <- dplyr::left_join(qc_df, specificity_type_1_red, by = c("InternalSampleId" = "Sample"))
   specificity_type_2 <- get_specificity_type_2_qc(ctrl_probes, background_offset = background_offset)
-  qc_df <- dplyr::left_join(qc_df, specificity_type_2, by = c("Basename" = "Sample"))
+  qc_df <- dplyr::left_join(qc_df, specificity_type_2, by = c("InternalSampleId" = "Sample"))
   nonpolymorphic_green <- get_nonpolymorphic_green_qc(ctrl_probes)
-  qc_df <- dplyr::left_join(qc_df, nonpolymorphic_green, by = c("Basename" = "Sample"))
+  qc_df <- dplyr::left_join(qc_df, nonpolymorphic_green, by = c("InternalSampleId" = "Sample"))
   nonpolymorphic_red <- get_nonpolymorphic_red_qc(ctrl_probes)
-  qc_df <- dplyr::left_join(qc_df, nonpolymorphic_red, by = c("Basename" = "Sample"))
+  qc_df <- dplyr::left_join(qc_df, nonpolymorphic_red, by = c("InternalSampleId" = "Sample"))
   qc_df
 }
