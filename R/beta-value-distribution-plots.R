@@ -1,6 +1,6 @@
 # Beta value distribution plots.
 
-#' Beta value distribution fill by sample
+#' Beta value distribution histgram fill by sample.
 #'
 #' @param x An object of minfi classes.
 #' @param output_file output plot file.
@@ -19,6 +19,7 @@ plot_beta_value_histogram_fill_by_sample <- function (x, output_file, ...) {
     stop("argument 'dat' must be an 'RGChannelSet', a 'MethylSet' or ",
          "matrix.")
   }
+  pal <- ggsci_pal_d(ggsci_pal_name = "jco", pal_size = ncol(x))
   as.data.frame(b) %>%
     pivot_longer(.,
                  cols = everything(),
@@ -26,7 +27,7 @@ plot_beta_value_histogram_fill_by_sample <- function (x, output_file, ...) {
                  values_to = "Beta") %>%
     ggplot2::ggplot(., aes(x = Beta, fill = Sample)) +
     ggplot2::geom_histogram(binwidth = 0.01, boundary = 0) +
-    ggsci::scale_fill_aaas(drop = FALSE) +
+    scale_fill_manual(values = pal, drop=FALSE) +
     ggplot2::facet_wrap(vars(Sample), ncol = 4, scales = "fixed") +
     ggplot2::scale_y_continuous(labels = scales::comma) +
     ggplot2::labs(x = "\u03b2 value", y = "No. of Probes", fill = "\u03b2 value") +
