@@ -76,6 +76,7 @@ get_qc_metrics <- function(rgset,
   if (verbose) {
     tictoc::toc()
   }
+  rownames(output) <- output$InternalSampleId
   minfi::pData(rgset) <- DataFrame(output)
   invisible(rgset)
 }
