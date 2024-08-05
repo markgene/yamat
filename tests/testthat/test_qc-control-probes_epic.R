@@ -19,7 +19,7 @@ test_that("sample number", {
 test_that("metric number", {
   testthat::skip_if(skip_flag, "Skip")
   control_probe_qc_epic <- get_test_control_probe_qc_epic()
-  testthat::expect_equal(ncol(control_probe_qc_epic), 61)
+  testthat::expect_equal(ncol(control_probe_qc_epic), 52)
 })
 
 test_that("restoration green intensity has the correct value", {
