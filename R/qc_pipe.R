@@ -25,10 +25,11 @@ qc_pipe <- function(rgset,
   if (missing(output))
     stop("output is required.")
   if (!dir.exists(output)) {
+    logger::log_info(glue::glue("Create output directory {output}"))
     dir.create(output, recursive = TRUE)
   }
   rgset <- get_qc_metrics(rgset)
-  qc <- minfi::pData(rgset_qc) %>%
+  qc <- minfi::pData(rgset) %>%
     as.data.frame()
   readr::write_csv(qc, file = file.path(output, qc_file))
   if (verbose) {
