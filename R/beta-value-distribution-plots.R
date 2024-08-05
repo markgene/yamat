@@ -6,6 +6,7 @@
 #' @param output_file output plot file.
 #' @param ... arguments passed to \code{\link[ggplot2]{ggsave}}.
 #' @returns A ggplot object of the plot.
+#' @export
 plot_beta_value_histogram_fill_by_sample <- function (x, output_file, ...) {
   if (missing(x))
     stop("x is required.")
