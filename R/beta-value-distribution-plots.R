@@ -29,7 +29,7 @@ plot_beta_value_histogram_fill_by_sample <- function (x, output_file, ...) {
     ggplot2::ggplot(., ggplot2::aes(x = Beta, fill = Sample)) +
     ggplot2::geom_histogram(binwidth = 0.01, boundary = 0) +
     ggplot2::scale_fill_manual(values = pal, drop = FALSE) +
-    ggplot2::facet_wrap(vars(Sample), ncol = 4, scales = "fixed") +
+    ggplot2::facet_wrap(ggplot2::vars(Sample), ncol = 4, scales = "fixed") +
     ggplot2::scale_y_continuous(labels = scales::comma) +
     ggplot2::labs(x = "\u03b2 value", y = "No. of Probes", fill = "\u03b2 value") +
     ggplot2::guides(fill = "none") +
@@ -40,20 +40,16 @@ plot_beta_value_histogram_fill_by_sample <- function (x, output_file, ...) {
       # legend.key.height = unit(0.5, units = "in"),
       # legend.key.width = unit(0.3, units = "in"),
       axis.text.x = ggplot2::element_text(angle = 0, hjust = 1),
-      strip.text.y.left = element_text(angle = 0, size = 10),
-      strip.text.x = element_text(size = 10)
+      strip.text.y.left = ggplot2::element_text(angle = 0, size = 10),
+      strip.text.x = ggplot2::element_text(size = 10)
     ) +
     patchwork::plot_annotation(
       title = glue::glue("\u03b2 value distribution"),
       subtitle = glue::glue(
-        "A typical sample is expect to have a bi-modal distribution with
-        two peaks close to 0 (unmeth) and 1 (meth), because we expect
-        most of the loci should have a certain methylation status. The
-        beta values are computed without any normalization.
-        NOTE: this is a typical sample. But a sample is possibly to have
-        different distribution when it passes. For example, a positive
-        control sample may have a unimodal with a peak close to 1, and a
-        negative control sample may have a unimodal with a peak close to 0.
+        "A typical sample is expect to have a bi-modal distribution with two peaks close to 0 (unmeth) and 1 (meth), because we expect
+        most of the loci should have a certain methylation status. The beta values are computed without any normalization.
+        NOTE: this is a typical sample. But a sample is possibly to have different distribution when it passes. For example, a positive
+        control sample may have a unimodal with a peak close to 1, and a negative control sample may have a unimodal with a peak close to 0.
         "
       ),
       theme = ggplot2::theme(plot.subtitle = ggplot2::element_text(hjust = 0, size = 9))
