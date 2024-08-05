@@ -26,7 +26,7 @@ plot_beta_value_histogram_fill_by_sample <- function (x, output_file, ...) {
                         cols = everything(),
                         names_to = "Sample",
                         values_to = "Beta") %>%
-    ggplot2::ggplot(., aes(x = Beta, fill = Sample)) +
+    ggplot2::ggplot(., ggplot2::aes(x = Beta, fill = Sample)) +
     ggplot2::geom_histogram(binwidth = 0.01, boundary = 0) +
     ggplot2::scale_fill_manual(values = pal, drop = FALSE) +
     ggplot2::facet_wrap(vars(Sample), ncol = 4, scales = "fixed") +
