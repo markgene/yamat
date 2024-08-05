@@ -79,3 +79,25 @@ get_qc_metrics <- function(rgset,
   minfi::pData(rgset) <- DataFrame(output)
   invisible(rgset)
 }
+
+
+#' Get Sentrix IDs.
+#'
+#' @param internal_sample_id internal sample ID
+#' @returns a character vector of Sentrix ID
+get_sentrix_id <- function(sentrix_id_position) {
+  sapply(sentrix_id_position, function(x) {
+    strsplit(x, split = "_")[[1]][1]
+  })
+}
+
+
+#' Get Sentrix position.
+#'
+#' @param internal_sample_id internal sample ID
+#' @returns a character vector of Sentrix position
+get_sentrix_position <- function(sentrix_id_position) {
+  sapply(sentrix_id_position, function(x) {
+    strsplit(x, split = "_")[[1]][2]
+  })
+}
