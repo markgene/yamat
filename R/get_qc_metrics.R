@@ -76,11 +76,52 @@ get_qc_metrics <- function(rgset,
   if (verbose) {
     tictoc::toc()
   }
+  output <- add_extra_columns(output)
   rownames(output) <- output$InternalSampleId
   minfi::pData(rgset) <- DataFrame(output)
   invisible(rgset)
 }
 
+
+#' Add extra columns to QC metrics and reformat
+#'
+#' @param qc a \code{data.frame} of QC metrics
+#' @returns a \code{data.frame} of QC metrics with extra columns and reorder.
+add_extra_columns <- function(qc) {
+  # Add extra columns to Metrics and Raw spreadsheets
+  if (!"Sentrix_ID" %in% colnames(qc)) {
+    qc$Sentrix_ID <- get_sentrix_id(qc$InternalSampleId)
+  }
+  if (!"Sentrix_Position" %in% colnames(qc)) {
+    qc$Sentrix_Position <- get_sentrix_position(qc$InternalSampleId)
+  }
+  qc_raw <- qc %>%
+    dplyr::select(Sentrix_ID, Sentrix_Position, everything())
+  # Add extra columns to Metrics spreadsheet
+  if (!"Sample_ID" %in% colnames(qc)) {
+    qc$Sample_ID <- ""
+  }
+  if (!"Sample_Description" %in% colnames(qc)) {
+    qc$Sample_Description <- ""
+  }
+  if (!"QC" %in% colnames(qc)) {
+    qc$QC <- ""
+  }
+  if (!"Note" %in% colnames(qc)) {
+    qc$Note <- ""
+  }
+  if (!"Beta_Value_Distribution" %in% colnames(qc)) {
+    qc$Beta_Value_Distribution <- ""
+  }
+  qc_review <- qc %>%
+    dplyr::select(Sentrix_ID,
+                  Sentrix_Position,
+                  Sample_ID,
+                  QC,
+                  Note,
+                  everything())
+  return(qc_review)
+}
 
 #' Get Sentrix IDs.
 #'
@@ -102,3 +143,6 @@ get_sentrix_position <- function(sentrix_id_position) {
     strsplit(x, split = "_")[[1]][2]
   })
 }
+
+
+
