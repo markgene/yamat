@@ -8,7 +8,7 @@
 #' @returns A bool vector of length 1.
 #' @export
 is_annotated <- function(x) {
-  if ("Unknown" %in% annotation(x)) {
+  if ("Unknown" %in% minfi::annotation(x)) {
     return(FALSE)
   } else {
     return(TRUE)
