@@ -31,6 +31,7 @@ write_qc_metrics_excel <- function(qc,
     "Probe_Detection_P_Value_Less_than_or_Equal_01_Percent",
     "Probe_Detection_P_Value_Less_than_or_Equal_05_Percent",
     "Beta_Value_Distribution",
+    "Tier2_QC_Fail",
     "Bisulfite_Conversion_Type_I_Probe_Design_Green_Converted_Unconverted_Ratio",
     "Bisulfite_Conversion_Type_I_Probe_Design_Green_Background_Highest_Unconverted_Ratio",
     "Bisulfite_Conversion_Type_I_Probe_Design_Red_Converted_Unconverted_Ratio",
@@ -71,15 +72,33 @@ write_qc_metrics_excel <- function(qc,
     "Metrics",
     cols = QC_index,
     rows = sample_row_index,
-    rule = '=="Fail"',
-    style = fail_style
+    rule = '!=""',
+    style = warning_style
   )
   openxlsx::conditionalFormatting(
     wb,
     "Metrics",
     cols = QC_index,
     rows = sample_row_index,
+    rule = '=="Fail"',
+    style = fail_style
+  )
+  Beta_Value_Distribution_index <- which(colnames(metrics) == "Beta_Value_Distribution")
+  openxlsx::conditionalFormatting(
+    wb,
+    "Metrics",
+    cols = Beta_Value_Distribution_index,
+    rows = sample_row_index,
     rule = '!=""',
+    style = warning_style
+  )
+  Tier2_QC_Fail_index <- which(colnames(metrics) == "Tier2_QC_Fail")
+  openxlsx::conditionalFormatting(
+    wb,
+    "Metrics",
+    cols = Tier2_QC_Fail_index,
+    rows = sample_row_index,
+    rule = '>0',
     style = warning_style
   )
   mean_detection_p_value_col_index <- which(colnames(metrics) == "Mean_Detection_P_Value")
@@ -356,9 +375,18 @@ write_qc_metrics_excel <- function(qc,
   description <- data.frame(
     Description = c(
       "This spreadsheet contains QC metrics as described below: ",
+      "Sentrix_ID: Sentrix ID of the BeadChip",
+      "Sentrix_Position: sample position on the BeadChip",
+      "Sample_ID: sample ID, e.g. surgical path number",
+      "Sample_Description: description of the sample",
+      "QC: QC flag. If fail, fill out Fail. The field need to be reviewed. If mean detection p-value > 0.05, fail will be filled.",
+      "Note: extra note on the QC or anything else about the sample",
       "Mean_Detection_P_Value: mean detection p-value. If p<=0.01, pass; if 0.01 < p <= 0.05, warning; if p > 0.05, fail. This is the most important metric.",
       "Probe_Detection_P_Value_Less_than_or_Equal_01_Percent: percent of probes with detection p-value <= 0.01. Threshold to be determined.",
       "Probe_Detection_P_Value_Less_than_or_Equal_05_Percent: percent of probes with detection p-value <= 0.05. Threshold to be determined.",
+      "Beta_Value_Distribution: if beta value distribution is as expected. The field need to be reviewed based on the beta value distribution plot. If it is okay, leave it empty. If not, put any text on it. A typical sample will have a bi-modal distribution with two peaks close to 0 (unmeth) and 1 (meth) respectively. Note: it depends on the sample. A bi-modal distribution is not always expected. For example, positive control and negative control samples will have a unimodal distribution with the peak close to 1 and 0 respectively.",
+      "Tier2_QC_Fail: number of failed tier 2 QC metrics",
+      "Tier2_QC_Total: total of tier 2 QC metrics, including QC probe metrics plus sum of meth and unmeth medians",
       "Bisulfite_Conversion_Type_I_Probe_Design_Green_Converted_Unconverted_Ratio: assess the efficiency of bisulfite conversion of the genomic DNA for probes of type I design on green channel. The Infinium Methylation probes query a [C/T] polymorphism created by bisulfite conversion of non-CpG cytosines in the genome. The controls use Infinium I probe design and allele-specific single base extension to monitor efficiency of bisulfite conversion. If the bisulfite conversion reaction was successful, the Converted probes matches the converted sequence and get extended. If the sample has unconverted DNA, the nconverted probes get extended. There are no underlying C bases in the primer landing sites, except for the query site itself. The metric is lowest converted intensity divided by highest unconverted intensity. It should be greater than 1.",
       "Bisulfite_Conversion_Type_I_Probe_Design_Green_Background_Highest_Unconverted_Ratio: assess the efficiency of bisulfite conversion of the genomic DNA for probes of type I design on green channel. The metric is calculated as highest AT of extension green probes. It should be greater than 1. Also see Bisulfite_Conversion_Type_I_Probe_Design_Green_Converted_Unconverted_Ratio.",
       "Bisulfite_Conversion_Type_I_Probe_Design_Red_Converted_Unconverted_Ratio: assess the efficiency of bisulfite conversion of the genomic DNA for probes of type I design on red channel. The Infinium Methylation probes query a [C/T] polymorphism created by bisulfite conversion of non-CpG cytosines in the genome. The controls use Infinium I probe design and allele-specific single base extension to monitor efficiency of bisulfite conversion. If the bisulfite conversion reaction was successful, the Converted probes matches the converted sequence and get extended. If the sample has unconverted DNA, the nconverted probes get extended. There are no underlying C bases in the primer landing sites, except for the query site itself. The metric is lowest converted intensity divided by highest unconverted intensity. It should be greater than 1.",
