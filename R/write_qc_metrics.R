@@ -97,6 +97,23 @@ write_qc_metrics_excel <- function(qc,
   sample_row_index <- 2:(nrow(qc) + 1)
   fail_style <- openxlsx::createStyle(fontColour = "#e3f9fd", bgFill = "#fc3939")
   warning_style <- openxlsx::createStyle(fontColour = "#e3f9fd", bgFill = "#efa31d")
+  QC_index <- which(colnames(metrics) == "QC")
+  openxlsx::conditionalFormatting(
+    wb,
+    "Metrics",
+    cols = QC_index,
+    rows = sample_row_index,
+    rule = '=="Fail"',
+    style = fail_style
+  )
+  openxlsx::conditionalFormatting(
+    wb,
+    "Metrics",
+    cols = QC_index,
+    rows = sample_row_index,
+    rule = '!=""',
+    style = warning_style
+  )
   mean_detection_p_value_col_index <- which(colnames(metrics) == "Mean_Detection_P_Value")
   openxlsx::conditionalFormatting(
     wb,
