@@ -6,3 +6,4 @@
 #.gitignore
 #yamat.Rproj
 testthat-problems.rds
+inst/doc

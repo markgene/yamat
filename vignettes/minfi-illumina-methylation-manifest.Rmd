@@ -1,0 +1,19 @@
+---
+title: "minfi-illumina-methylation-manifest"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{minfi-illumina-methylation-manifest}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(yamat)
+```
