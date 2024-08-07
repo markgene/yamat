@@ -1,5 +1,5 @@
 ---
-title: "minfi-illumina-methylation-manifest"
+title: "Minfi Manifest and Annotation"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{minfi-illumina-methylation-manifest}
@@ -10,10 +10,172 @@ vignette: >
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  eval=FALSE
 )
 ```
 
 ```{r setup}
 library(yamat)
+library(minfi)
+
+#' Get probe total number
+get_probe_total_from_manifest <- function(illumina_methylation_manifest) {
+  probe_counts <- sapply(illumina_methylation_manifest@data, nrow)
+  return(sum(probe_counts))
+}
+
+
+#' Get probe names
+get_probe_names_from_manifest <- function(illumina_methylation_manifest) {
+  probe_names <- lapply(
+    illumina_methylation_manifest@data,
+    function(x) {x$Name}
+  )
+  return(do.call(c, probe_names))
+}
+
+
+#' Get probe counts
+get_probe_counts_from_manifest <- function(illumina_methylation_manifest) {
+  probe_numbers <- sapply(illumina_methylation_manifest@data, nrow)
+  unique_probe_names <- sapply(
+    illumina_methylation_manifest@data, 
+    function(x) {
+      length(unique(x$Name))
+    }
+  )
+  output <- data.frame(
+    Probe_number = probe_numbers,
+    Unique_probe_name = unique_probe_names
+  )
+  return(output)
+}
 ```
+
+# EPIC/850K
+
+```{r epic_manifest}
+library(IlluminaHumanMethylationEPICmanifest)
+
+IlluminaHumanMethylationEPICmanifest
+
+# IlluminaMethylationManifest object
+# Annotation
+#   array: IlluminaHumanMethylationEPIC
+# Number of type I probes: 142262 
+# Number of type II probes: 724574 
+# Number of control probes: 635 
+# Number of SNP type I probes: 21 
+# Number of SNP type II probes: 38 
+
+str(IlluminaHumanMethylationEPICmanifest)
+
+# Formal class 'IlluminaMethylationManifest' [package "minfi"] with 2 slots
+#   ..@ data      :<environment: 0x000002336bb7b480> 
+#   ..@ annotation: chr "IlluminaHumanMethylationEPIC"
+
+get_probe_total_from_manifest(IlluminaHumanMethylationEPICmanifest)
+
+# 867530
+
+get_probe_counts_from_manifest(IlluminaHumanMethylationEPICmanifest)
+
+#             Probe_number Unique_probe_name
+# TypeII            724574            724574
+# TypeSnpI              21                21
+# TypeI             142262            142262
+# TypeControl          635                 0
+# TypeSnpII             38                38
+```
+
+
+```{r epic_anno}
+library(tidyverse)
+library(IlluminaHumanMethylationEPICanno.ilm10b2.hg19)
+anno <- getAnnotation(IlluminaHumanMethylationEPICanno.ilm10b2.hg19)
+
+dim(anno)
+# [1] 866836     46
+
+# Verify the code
+anno %>%
+  head() %>%
+  as.data.frame() -> anno_test
+rbind(anno_test, anno_test) %>%
+  dplyr::filter(Type == "I") %>%
+  dplyr::group_by(chr, pos) %>%
+  dplyr::summarize(Count=n()) %>%
+  dplyr::pull(Count) %>%
+  table()
+
+# 2 
+# 6
+
+# Six probes present twice.
+
+anno %>%
+  as.data.frame() %>%
+  dplyr::filter(Type == "I") %>%
+  dplyr::group_by(chr, pos) %>%
+  dplyr::summarize(Count=n()) %>%
+  dplyr::pull(Count) %>%
+  table()
+
+#      1 
+# 142262
+
+# All type I probes present once
+
+anno %>%
+  as.data.frame() %>%
+  dplyr::filter(Type == "II") %>%
+  dplyr::group_by(chr, pos) %>%
+  dplyr::summarize(Count=n()) %>%
+  dplyr::pull(Count) %>%
+  table()
+
+#      1 
+# 724574
+
+# All type II probes present once
+```
+
+Compare probe IDs/Names from manifest and annotation:
+
+```{r}
+probe_names_manifest <- get_probe_names_from_manifest(IlluminaHumanMethylationEPICmanifest)
+probe_ids_annotation <- rownames(anno)
+
+all(probe_names_manifest %in% probe_ids_annotation)
+
+# [1] FALSE
+
+all(probe_ids_annotation %in% probe_names_manifest)
+
+# [1] TRUE
+
+setdiff(probe_names_manifest, probe_ids_annotation)
+
+#  [1] "rs10796216" "rs213028"   "rs951295"   "rs3936238"  "rs6991394" 
+#  [6] "rs1520670"  "rs11034952" "rs9292570"  "rs2385226"  "rs1040870" 
+# [11] "rs10882854" "rs5987737"  "rs13369115" "rs2208123"  "rs6471533" 
+# [16] "rs715359"   "rs10033147" "rs5926356"  "rs6626309"  "rs654498"  
+# [21] "rs10936224" "rs2468330"  "rs877309"   "rs2857639"  "rs798149"  
+# [26] "rs939290"   "rs9839873"  "rs739259"   "rs133860"   "rs7746156" 
+# [31] "rs1941955"  "rs1484127"  "rs2235751"  "rs6982811"  "rs2125573" 
+# [36] "rs845016"   "rs4742386"  "rs1019916"  "rs9363764"  "rs472920"  
+# [41] "rs1510189"  "rs6426327"  "rs1416770"  "rs2959823"  "rs2804694" 
+# [46] "rs2032088"  "rs4331560"  "rs11249206" "rs1510480"  "rs264581"  
+# [51] "rs6546473"  "rs2521373"  "rs10457834" "rs966367"   "rs7660805" 
+# [56] "rs1495031"  "rs348937"   "rs1467387"  "rs1945975" 
+```
+
+All probe IDs in the annotation are presented in the manifest. The differences are SNP probes in the manifest but not the annotation.
+
+```{r}
+library(minfiDataEPIC)
+dim(MsetEPIC)
+# [1] 866836      3
+```
+
