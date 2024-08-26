@@ -37,26 +37,10 @@ get_qc_metrics <- function(rgset,
     tictoc::toc()
   }
   # Get meth and unmeth median - raw
-  mset_raw <- minfi::preprocessRaw(rgset)
-  meth_unmeth_median_raw <- minfi::getQC(mset_raw) %>%
-    as.data.frame() %>%
-    tibble::rownames_to_column(var = "InternalSampleId") %>%
-    dplyr::rename(Meth_Median_Raw = mMed, Unmeth_Median_Raw = uMed) %>%
-    dplyr::mutate(Sum_Meth_Unmeth_Medians_Raw = Meth_Median_Raw + Unmeth_Median_Raw)
+  meth_unmeth_median_raw <- get_meth_unmeth_median_raw(rgset = rgset)
   output <- dplyr::left_join(output, meth_unmeth_median_raw, by = "InternalSampleId")
   # Get meth and unmeth median - normalized by Noob
-  mset_noob <- minfi::preprocessNoob(rgset,
-                                     dyeCorr = TRUE,
-                                     verbose = TRUE,
-                                     dyeMethod = "single")
-  gmset_noob <- minfi::mapToGenome(mset_noob)
-  gmset_noob_flt <- minfi::dropLociWithSnps(gmset_noob)
-  meth_unmeth_median_noob <- minfi::getQC(gmset_noob_flt) %>%
-    as.data.frame() %>%
-    tibble::rownames_to_column(var = "InternalSampleId") %>%
-    dplyr::rename(Meth_Median_Normalized = mMed,
-                  Unmeth_Median_Normalized = uMed) %>%
-    dplyr::mutate(Sum_Meth_Unmeth_Medians_Normalized = Meth_Median_Normalized + Unmeth_Median_Normalized)
+  meth_unmeth_median_noob <- get_meth_unmeth_median_noob(rgset = rgset)
   output <- dplyr::left_join(output, meth_unmeth_median_noob, by = "InternalSampleId")
   # Quality control: gender
   if (verbose) {
@@ -81,6 +65,58 @@ get_qc_metrics <- function(rgset,
   minfi::pData(rgset) <- DataFrame(output)
   invisible(rgset)
 }
+
+
+#' Get meth + unmeth median without normalization.
+#'
+#' @param rgset An object of \code{\link[minfi]{RGChannelSet-class}}.
+#' @returns a \code{data.frame} of meth and unmeth median, and their sum per
+#'   sample without normalization.
+get_meth_unmeth_median_raw <- function(rgset) {
+  mset_raw <- minfi::preprocessRaw(rgset)
+  meth_unmeth_median_raw <- minfi::getQC(mset_raw) %>%
+    as.data.frame() %>%
+    tibble::rownames_to_column(var = "InternalSampleId") %>%
+    dplyr::rename(Meth_Median_Raw = mMed, Unmeth_Median_Raw = uMed) %>%
+    dplyr::mutate(Sum_Meth_Unmeth_Medians_Raw = Meth_Median_Raw + Unmeth_Median_Raw)
+  return(meth_unmeth_median_raw)
+}
+
+
+#' Get meth + unmeth median noob preprocessed.
+#'
+#' @param rgset An object of \code{\link[minfi]{RGChannelSet-class}}.
+#' @returns a \code{data.frame} of meth and unmeth median, and their sum per
+#'   sample with Noob preprocessing procedure.
+get_meth_unmeth_median_noob <- function(rgset) {
+  meth_unmeth_median_noob <- tryCatch({
+    mset_noob <- minfi::preprocessNoob(rgset,
+                                       dyeCorr = TRUE,
+                                       verbose = TRUE,
+                                       dyeMethod = "single")
+    gmset_noob <- minfi::mapToGenome(mset_noob)
+    gmset_noob_flt <- minfi::dropLociWithSnps(gmset_noob)
+    meth_unmeth_median_noob <- minfi::getQC(gmset_noob_flt) %>%
+      as.data.frame() %>%
+      tibble::rownames_to_column(var = "InternalSampleId") %>%
+      dplyr::rename(Meth_Median_Normalized = mMed,
+                    Unmeth_Median_Normalized = uMed) %>%
+      dplyr::mutate(Sum_Meth_Unmeth_Medians_Normalized = Meth_Median_Normalized + Unmeth_Median_Normalized)
+    meth_unmeth_median_noob
+  }, error = function(cond) {
+    logger::log_error(paste("Noob normalization fails"))
+    logger::log_error(conditionMessage(cond))
+    meth_unmeth_median_noob <- data.frame(
+      InternalSampleId = meth_unmeth_median_raw$InternalSampleId,
+      Meth_Median_Normalized = 0,
+      Unmeth_Median_Normalized = 0,
+      Sum_Meth_Unmeth_Medians_Normalized = 0
+    )
+    meth_unmeth_median_noob
+  })
+  return(meth_unmeth_median_noob)
+}
+
 
 
 #' Add extra columns to QC metrics and reformat
@@ -121,15 +157,17 @@ add_extra_columns <- function(qc) {
   qc$Tier2_QC_Fail <- rowSums(!qa)
   qc$Tier2_QC_Total <- ncol(qa)
   qc_review <- qc %>%
-    dplyr::select(Sentrix_ID,
-                  Sentrix_Position,
-                  Sample_ID,
-                  QC,
-                  Note,
-                  Beta_Value_Distribution,
-                  Tier2_QC_Fail,
-                  Tier2_QC_Total,
-                  everything())
+    dplyr::select(
+      Sentrix_ID,
+      Sentrix_Position,
+      Sample_ID,
+      QC,
+      Note,
+      Beta_Value_Distribution,
+      Tier2_QC_Fail,
+      Tier2_QC_Total,
+      everything()
+    )
   return(qc_review)
 }
 
