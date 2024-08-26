@@ -59,6 +59,8 @@ The document is about BeadChip and comparison.
 
 # EPIC/850K
 
+## Based on `IlluminaMethylationManifest`
+
 ```{r epic_manifest}
 library(IlluminaHumanMethylationEPICmanifest)
 
@@ -183,6 +185,9 @@ dim(MsetEPIC)
 # [1] 866836      3
 ```
 
+## Based on Zhou's SeSAMe
+
+
 
 
 # Comparisons
@@ -228,4 +233,28 @@ anno_epic_v2 %>%
   dplyr::group_by(EPICv1_Loci) %>%
   dplyr::summarise(Count=n()) -> anno_epic_v2_new
 ```
+
+### zwdzwd Infinium annotation
+
+[Source](https://zwdzwd.github.io/InfiniumAnnotation)
+
+```{r}
+epic_v2_file <- "/Users/chenm8/Downloads/EPICv2.hg38.manifest.tsv.gz"
+library(readr)
+epic_v2_manifest <- readr::read_tsv(epic_v2_file)
+
+table(epic_v2_manifest$CpG_chrm)
+table(epic_v2_manifest$mapChrm_A)
+
+
+# Unique position
+epic_v2_manifest %>%
+  as.data.frame() %>%
+  dplyr::group_by(mapChrm_A , mapPos_A ) %>%
+  dplyr::summarize(Count=n()) %>%
+  dplyr::pull(Count) %>%
+  table()
+```
+
+
 
